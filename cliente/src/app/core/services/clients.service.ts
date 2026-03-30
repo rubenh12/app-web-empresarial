@@ -33,9 +33,9 @@ export interface UpdateClientDto {
   providedIn: 'root',
 })
 export class ClientsService {
-  private readonly baseUrl = 'http://localhost:3000/clients';
+  private readonly baseUrl = `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/clients`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   findAll(): Observable<Client[]> {
     return this.http.get<Client[]>(this.baseUrl);

@@ -27,15 +27,15 @@ export interface CreateProjectDto {
   clientId: string;
 }
 
-export interface UpdateProjectDto extends Partial<CreateProjectDto> {}
+export interface UpdateProjectDto extends Partial<CreateProjectDto> { }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectsService {
-  private apiUrl = 'http://localhost:3000/projects';
+  private apiUrl = `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/projects`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   findAll(): Observable<Project[]> {
     return this.http.get<Project[]>(this.apiUrl);

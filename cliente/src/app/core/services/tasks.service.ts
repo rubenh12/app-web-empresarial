@@ -32,15 +32,15 @@ export interface CreateTaskDto {
   userId: string;
 }
 
-export interface UpdateTaskDto extends Partial<CreateTaskDto> {}
+export interface UpdateTaskDto extends Partial<CreateTaskDto> { }
 
 @Injectable({
   providedIn: 'root'
 })
 export class TasksService {
-  private apiUrl = 'http://localhost:3000/tasks';
+  private apiUrl = `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/tasks`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   findAll(projectId?: string): Observable<Task[]> {
     const url = projectId ? `${this.apiUrl}?projectId=${projectId}` : this.apiUrl;

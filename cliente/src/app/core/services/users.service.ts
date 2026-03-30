@@ -33,9 +33,9 @@ export interface UpdateUserDto {
   providedIn: 'root'
 })
 export class UsersService {
-  private readonly baseUrl = 'http://localhost:3000/users';
+  private readonly baseUrl = `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/users`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   findAll(): Observable<User[]> {
     return this.http.get<User[]>(this.baseUrl);

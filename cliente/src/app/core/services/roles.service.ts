@@ -26,9 +26,9 @@ export interface CreateRoleDto {
   providedIn: 'root'
 })
 export class RolesService {
-  private readonly baseUrl = 'http://localhost:3000/roles';
+  private readonly baseUrl = `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/roles`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   findAll(): Observable<Role[]> {
     return this.http.get<Role[]>(this.baseUrl);

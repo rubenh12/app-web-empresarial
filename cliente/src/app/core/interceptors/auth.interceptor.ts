@@ -18,7 +18,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      const isLogin = req.url.includes('/auth/login');
+      const isLogin = req.url.includes(`${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/auth/login`);
 
       if (!isLogin) {
         if (error.status === 401) {
