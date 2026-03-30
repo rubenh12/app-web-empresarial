@@ -25,7 +25,7 @@ import { SharedButtonComponent } from '../shared/components/button/button.js';
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-8 flex flex-col">
           <div class="space-y-4">
-            <app-shared-input label="Email" type="email" placeholder="nombre@gmail.com" [control]="getEmailControl()"></app-shared-input>
+            <app-shared-input label="Correo" type="email" placeholder="nombre@gmail.com" [control]="getEmailControl()"></app-shared-input>
             <app-shared-input label="Contraseña" type="password" [control]="getPasswordControl()"></app-shared-input>
           </div>
 

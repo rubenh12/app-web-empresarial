@@ -15,7 +15,7 @@ import { AuthService } from '../core/services/auth.service';
             <!-- Logo -->
             <div class="flex items-center">
               <h1 class="text-2xl font-bold text-gray-900">
-                Empresa <span class="text-blue-600">2026</span>
+                Gestor de <span class="text-blue-600">Proyectos</span>
               </h1>
             </div>
 

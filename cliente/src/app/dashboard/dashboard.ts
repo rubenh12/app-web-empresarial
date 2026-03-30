@@ -10,7 +10,7 @@ import { AuthService } from '../core/services/auth.service.js';
   template: `
     <div class="min-h-screen bg-white font-sans antialiased text-slate-900 flex flex-col p-8">
       <nav class="flex items-center justify-between h-20 border-b border-slate-100 mb-12">
-        <h1 class="text-2xl font-black tracking-tight uppercase">Empresa <span class="text-blue-600">2026</span></h1>
+        <h1 class="text-2xl font-black tracking-tight uppercase">Gestor de<span class="text-blue-600">Proyectos</span></h1>
         
         <div class="flex items-center gap-6">
           <!-- Botones de navegación según permisos -->

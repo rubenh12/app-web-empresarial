@@ -25,7 +25,7 @@ import { ToastService } from '../core/services/toast.service';
           />
 
           <app-shared-input
-            label="Email"
+            label="Correo"
             type="email"
             placeholder="correo@ejemplo.com"
             [control]="getEmailControl()"
@@ -90,7 +90,7 @@ export class ClientFormComponent implements OnInit {
   clientId = input<string | null>(null);
   onSuccess = output<void>();
   onCancel = output<void>();
-  
+
   clientForm: FormGroup;
   isLoading = false;
   error = '';
@@ -112,20 +112,20 @@ export class ClientFormComponent implements OnInit {
 
     effect(() => {
       const id = this.clientId();
-      
+
       this.clientForm.reset({ status: 'activo' });
       this.fieldErrors.set({});
       this.error = '';
-      
+
       this.isEdit = !!id;
-      
+
       if (this.isEdit) {
         this.loadClient(id!);
       }
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   getNameControl() { return this.clientForm.get('name') as FormControl | null; }
   getEmailControl() { return this.clientForm.get('email') as FormControl | null; }
@@ -168,9 +168,9 @@ export class ClientFormComponent implements OnInit {
 
         this.clientsService.update(id, updateDto).subscribe({
           next: () => {
-             this.isLoading = false;
-             this.toastService.success('Cliente actualizado correctamente');
-             this.onSuccess.emit();
+            this.isLoading = false;
+            this.toastService.success('Cliente actualizado correctamente');
+            this.onSuccess.emit();
           },
           error: (err) => this.handleError(err)
         });
@@ -192,26 +192,26 @@ export class ClientFormComponent implements OnInit {
     this.isLoading = false;
     const errorData = err.error || {};
     const status = err.status;
-    
+
     if (status === 409 && errorData.message) {
       const message = errorData.message;
       const fieldName = message.toLowerCase().includes('email') ? 'email' : 'campo';
-      
+
       const fieldErrors: Record<string, string> = {};
       fieldErrors[fieldName] = message;
       this.fieldErrors.set(fieldErrors);
       this.toastService.error(message);
     } else if (errorData.message) {
-       this.toastService.error(errorData.message);
-       if(errorData.details && Array.isArray(errorData.details)){
-         const errors: Record<string, string> = {};
-         errorData.details.forEach((detail: any) => {
-           const field = detail.path?.[0] || 'campo';
-           const message = detail.message || 'Valor inválido';
-           errors[field] = message;
-         });
-         this.fieldErrors.set(errors);
-       }
+      this.toastService.error(errorData.message);
+      if (errorData.details && Array.isArray(errorData.details)) {
+        const errors: Record<string, string> = {};
+        errorData.details.forEach((detail: any) => {
+          const field = detail.path?.[0] || 'campo';
+          const message = detail.message || 'Valor inválido';
+          errors[field] = message;
+        });
+        this.fieldErrors.set(errors);
+      }
     } else {
       this.toastService.error('Error al procesar la solicitud');
       this.error = 'Error al procesar la solicitud';

@@ -32,7 +32,7 @@ interface Role {
           />
 
           <app-shared-input
-            label="Email"
+            label="Correo"
             type="email"
             placeholder="correo@ejemplo.com"
             [control]="getEmailControl()"
