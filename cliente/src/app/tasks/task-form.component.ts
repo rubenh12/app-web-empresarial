@@ -30,7 +30,7 @@ import { SharedButtonComponent } from '../shared/components/button/button';
           </div>
 
           <div class="grid grid-cols-2 gap-4">
-            <div class="flex flex-col gap-1.5">
+            <div *ngIf="!projectId" class="flex flex-col gap-1.5">
               <label class="text-sm font-semibold text-slate-700">Proyecto</label>
               <select formControlName="projectId" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 outline-none focus:border-blue-500">
                 <option value="">Seleccionar...</option>
@@ -38,8 +38,10 @@ import { SharedButtonComponent } from '../shared/components/button/button';
               </select>
               <span *ngIf="fieldErrors()['projectId']" class="text-red-500 text-xs mt-1">{{ fieldErrors()['projectId'] }}</span>
             </div>
-
-            <div class="flex flex-col gap-1.5">
+            <!-- Si projectId existe, Responsable ocupa todo el ancho o se queda a la derecha. 
+                 Para un diseño más fluido, si projectId no existe mostramos ambos, 
+                 si existe, podemos hacer que Responsable sea col-span-2 -->
+            <div class="flex flex-col gap-1.5" [ngClass]="{'col-span-2': projectId}">
               <label class="text-sm font-semibold text-slate-700">Responsable</label>
               <select formControlName="userId" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 outline-none focus:border-blue-500">
                 <option value="">Seleccionar...</option>

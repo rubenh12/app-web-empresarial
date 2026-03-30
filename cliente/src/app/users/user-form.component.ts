@@ -164,21 +164,12 @@ export class UserFormComponent implements OnInit {
   }
 
   loadRoles() {
-    this.usersService.findAll().subscribe({
-      next: (users) => {
-        const uniqueRoles = users.reduce((acc: any[], user) => {
-          if (!acc.find(role => role.id === user.role.id)) {
-            acc.push({
-              id: user.role.id,
-              name: user.role.name,
-              description: user.role.description || user.role.name
-            });
-          }
-          return acc;
-        }, []);
-        this.roles.set(uniqueRoles);
+    this.usersService.getRoles().subscribe({
+      next: (roles) => {
+        this.roles.set(roles);
       },
       error: () => {
+        // Fallback en caso de error
         this.roles.set([
           { id: '1', name: 'ADMIN', description: 'Administrador con acceso total' },
           { id: '2', name: 'USUARIO', description: 'Usuario con acceso básico' }

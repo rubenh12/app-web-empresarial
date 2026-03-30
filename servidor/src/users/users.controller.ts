@@ -17,6 +17,12 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('roles')
+  @Permissions('ver:usuarios', 'crear:usuarios', 'actualizar:usuarios')
+  async findAllRoles() {
+    return this.usersService.findAllRoles();
+  }
+
   @Get(':id')
   @Permissions('ver:usuarios', 'ver:tareas', 'crear:tareas', 'actualizar:tareas')
   async findOne(@Param('id') id: string) {

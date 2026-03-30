@@ -20,6 +20,7 @@ async function main() {
     { slug: PermissionSlug.ACTUALIZAR_CLIENTES, name: 'Editar clientes existentes' },
     { slug: PermissionSlug.ELIMINAR_CLIENTES, name: 'Eliminar clientes del sistema' },
     { slug: PermissionSlug.VER_PROYECTOS, name: 'Ver listado de proyectos' },
+    { slug: PermissionSlug.VER_PROYECTOS_ASIGNADOS, name: 'Ver proyectos asignados' },
     { slug: PermissionSlug.CREAR_PROYECTOS, name: 'Agregar nuevos proyectos' },
     { slug: PermissionSlug.ACTUALIZAR_PROYECTOS, name: 'Editar proyectos existentes' },
     { slug: PermissionSlug.ELIMINAR_PROYECTOS, name: 'Eliminar proyectos del sistema' },
@@ -57,14 +58,24 @@ async function main() {
     where: { name: RoleName.USUARIO },
     update: {
       permissions: {
-        set: [{ slug: PermissionSlug.VER_USUARIOS }],
+        set: [
+          { slug: PermissionSlug.VER_USUARIOS },
+          { slug: PermissionSlug.VER_PROYECTOS_ASIGNADOS },
+          { slug: PermissionSlug.VER_TAREAS },
+          { slug: PermissionSlug.ACTUALIZAR_TAREAS }
+        ],
       },
     },
     create: {
       name: RoleName.USUARIO,
-      description: 'Usuario con acceso básico de lectura',
+      description: 'Usuario con acceso limitado',
       permissions: {
-        connect: [{ slug: PermissionSlug.VER_USUARIOS }],
+        connect: [
+          { slug: PermissionSlug.VER_USUARIOS },
+          { slug: PermissionSlug.VER_PROYECTOS_ASIGNADOS },
+          { slug: PermissionSlug.VER_TAREAS },
+          { slug: PermissionSlug.ACTUALIZAR_TAREAS }
+        ],
       },
     },
   });

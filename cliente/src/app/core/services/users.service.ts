@@ -41,6 +41,10 @@ export class UsersService {
     return this.http.get<User[]>(this.baseUrl);
   }
 
+  getRoles(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/roles`);
+  }
+
   findOne(id: string): Observable<User> {
     return this.http.get<User>(`${this.baseUrl}/${id}`);
   }

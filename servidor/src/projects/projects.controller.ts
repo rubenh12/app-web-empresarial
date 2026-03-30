@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Patch, Delete, Body, Param,
+  Controller, Get, Post, Patch, Delete, Body, Param, Req,
   UseGuards, UsePipes, BadRequestException,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service.js';
@@ -15,8 +15,20 @@ export class ProjectsController {
   constructor(private projectsService: ProjectsService) {}
 
   @Get()
-  @Permissions('ver:proyectos', 'ver:tareas', 'crear:tareas', 'actualizar:tareas')
-  async findAll() {
+  @Permissions('ver:proyectos', 'ver:proyectos:asignados', 'ver:tareas', 'crear:tareas', 'actualizar:tareas')
+  async findAll(@Req() req: any) {
+    const { user } = req;
+    
+    // Si tiene permiso para ver todos, no filtramos por ID
+    if (user.permissions.includes('ver:proyectos')) {
+      return this.projectsService.findAll();
+    }
+    
+    // Si solo tiene permiso para ver asignados, filtramos por su ID de usuario
+    if (user.permissions.includes('ver:proyectos:asignados')) {
+      return this.projectsService.findAll(user.sub);
+    }
+
     return this.projectsService.findAll();
   }
 

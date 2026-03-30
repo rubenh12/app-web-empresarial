@@ -6,8 +6,15 @@ import { CreateProjectDto, UpdateProjectDto } from './dto/project.zod.js';
 export class ProjectsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
+  async findAll(userId?: string) {
+    const where = userId ? {
+      tasks: {
+        some: { userId }
+      }
+    } : {};
+
     return this.prisma.client.project.findMany({
+      where,
       include: { client: true },
       orderBy: { createdAt: 'desc' },
     });
