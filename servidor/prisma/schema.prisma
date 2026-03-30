@@ -32,3 +32,14 @@ model Permission {
   name  String
   roles Role[] @relation("RoleToPermission")
 }
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  company   String?
+  status    String   @default("activo")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -24,7 +24,7 @@ export interface ModalOptions {
         <!-- Modal -->
         <div 
           [class]="getModalClasses()"
-          class="relative bg-white rounded-lg shadow-xl transform transition-all"
+          class="relative z-10 bg-white rounded-lg shadow-xl transform transition-all"
           (click)="$event.stopPropagation()"
         >
           <!-- Header -->
@@ -72,7 +72,7 @@ export class ModalComponent {
 
   getModalClasses(): string {
     const size = this.options().size || 'md';
-    const baseClasses = 'relative bg-white rounded-lg shadow-xl transform transition-all w-full';
+    const baseClasses = 'relative z-10 bg-white rounded-lg shadow-xl transform transition-all w-full';
     
     const sizeClasses = {
       sm: 'max-w-md',

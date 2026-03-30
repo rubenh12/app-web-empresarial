@@ -16,6 +16,7 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
         [formControl]="control"
         [type]="type"
         [placeholder]="placeholder"
+        [attr.maxlength]="maxLength || null"
         class="w-full px-5 h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none transition-all duration-300
                focus:border-blue-500 focus:bg-white focus:shadow-lg focus:shadow-blue-500/5 placeholder:text-slate-300"
       />
@@ -31,6 +32,7 @@ export class SharedInputComponent {
   @Input() placeholder: string = '';
   @Input() control!: FormControl | null;
   @Input() error: string = '';
+  @Input() maxLength?: number;
   
   hasError(): boolean {
     return !!this.error || !!(this.control?.touched && this.control?.invalid);

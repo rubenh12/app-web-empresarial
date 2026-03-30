@@ -29,6 +29,13 @@ import { AuthService } from '../core/services/auth.service';
               >
                 Usuarios
               </button>
+              <button 
+                *ngIf="auth.hasPermission('ver:clientes')"
+                (click)="navigateToClients()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                Clientes
+              </button>
             </div>
 
             <!-- User Menu -->
@@ -69,6 +76,13 @@ import { AuthService } from '../core/services/auth.service';
               >
                 Usuarios
               </button>
+              <button 
+                *ngIf="auth.hasPermission('ver:clientes')"
+                (click)="navigateToClients(); toggleMobileMenu()"
+                class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+              >
+                Clientes
+              </button>
             </div>
             
             <div class="border-t border-gray-200 pt-3 mt-3">
@@ -101,6 +115,10 @@ export class LayoutComponent {
 
   navigateToUsers() {
     this.router.navigate(['/users']);
+  }
+
+  navigateToClients() {
+    this.router.navigate(['/clients']);
   }
 
   navigateToCreateUser() {

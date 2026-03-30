@@ -15,6 +15,10 @@ async function main() {
     { slug: PermissionSlug.CREAR_USUARIOS, name: 'Agregar nuevos usuarios' },
     { slug: PermissionSlug.ACTUALIZAR_USUARIOS, name: 'Editar usuarios existentes' },
     { slug: PermissionSlug.ELIMINAR_USUARIOS, name: 'Eliminar usuarios del sistema' },
+    { slug: PermissionSlug.VER_CLIENTES, name: 'Ver listado de clientes' },
+    { slug: PermissionSlug.CREAR_CLIENTES, name: 'Agregar nuevos clientes' },
+    { slug: PermissionSlug.ACTUALIZAR_CLIENTES, name: 'Editar clientes existentes' },
+    { slug: PermissionSlug.ELIMINAR_CLIENTES, name: 'Eliminar clientes del sistema' },
   ];
 
   for (const p of permissions) {

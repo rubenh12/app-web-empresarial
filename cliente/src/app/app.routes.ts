@@ -3,6 +3,7 @@ import { LoginComponent } from './login/login.js';
 import { LayoutComponent } from './layout/layout.component.js';
 import { HomeComponent } from './pages/home/home.component.js';
 import { UsersComponent } from './users/users.component.js';
+import { ClientsComponent } from './clients/clients.component.js';
 import { authGuard } from './core/guards/auth.guard.js';
 
 export const routes: Routes = [
@@ -14,7 +15,8 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: HomeComponent },
-      { path: 'users', component: UsersComponent }
+      { path: 'users', component: UsersComponent },
+      { path: 'clients', component: ClientsComponent }
     ]
   },
   { path: '**', redirectTo: 'login' }

@@ -101,6 +101,7 @@ import { UserFormComponent } from './user-form.component';
       <!-- Modal para crear/editar usuarios -->
       <app-modal #modal>
         <app-user-form 
+          *ngIf="modal.isOpen()"
           [userId]="editingUserId()"
           (onSuccess)="onFormSuccess()"
           (onCancel)="closeModal()"
