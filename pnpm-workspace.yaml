@@ -1,0 +1,9 @@
+packages:
+  - servidor
+  - cliente
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - '@prisma/engines'
+  - prisma
+  - unrs-resolver

@@ -1,0 +1,26 @@
+# IDEs/System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+
+# Build Outputs
+dist/
+dist-*
+.angular/
+servidor/generated/
+servidor/dist/
+
+# Development DB
+servidor/prisma/*.db
+servidor/prisma/*.db-journal
+
+# Environment (EXCLUDED as requested: do NOT ignore .env)
+#!.env
+#!.env.local
+#!.env.*

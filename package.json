@@ -1,0 +1,10 @@
+{
+  "name": "app-web-empresarial",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "servidor": "pnpm --filter servidor dev",
+    "cliente": "pnpm --filter cliente dev",
+    "dev": "pnpm -r dev"
+  }
+}
