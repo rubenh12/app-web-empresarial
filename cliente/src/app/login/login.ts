@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../core/services/auth.service.js';
 import { SharedInputComponent } from '../shared/components/input/input.js';
 import { SharedButtonComponent } from '../shared/components/button/button.js';
 
@@ -8,9 +10,9 @@ import { SharedButtonComponent } from '../shared/components/button/button.js';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
-    SharedInputComponent, 
+    CommonModule,
+    ReactiveFormsModule,
+    SharedInputComponent,
     SharedButtonComponent
   ],
   template: `
@@ -18,17 +20,24 @@ import { SharedButtonComponent } from '../shared/components/button/button.js';
       <div class="max-w-md w-full bg-white border-2 border-slate-100 p-12 rounded-[3.5rem] animate-in fade-in zoom-in duration-700">
         <div class="space-y-4 mb-12 text-center">
           <h1 class="text-4xl font-extrabold tracking-tight">Acceso</h1>
-          <p class="text-slate-400 font-medium">Gestiona tu negocio de forma ordenada</p>
+          <p class="text-slate-400 font-medium">Gestiona proyectos empresariales</p>
         </div>
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-8 flex flex-col">
           <div class="space-y-4">
-            <app-shared-input label="Email" type="email" placeholder="nombre@empresa.com" [control]="getEmailControl()"></app-shared-input>
+            <app-shared-input label="Email" type="email" placeholder="nombre@gmail.com" [control]="getEmailControl()"></app-shared-input>
             <app-shared-input label="Contraseña" type="password" [control]="getPasswordControl()"></app-shared-input>
           </div>
 
           <div class="flex flex-col pt-4">
-            <app-shared-button label="Entrar" type="submit" [disabled]="loginForm.invalid"></app-shared-button>
+            <app-shared-button 
+              [label]="isLoading ? 'Entrando...' : 'Entrar'" 
+              type="submit" 
+              [disabled]="loginForm.invalid || isLoading"
+            ></app-shared-button>
+          </div>
+          <div *ngIf="error" class="text-red-500 text-[13px] font-semibold text-center mt-4">
+            {{ error }}
           </div>
         </form>
       </div>
@@ -37,8 +46,14 @@ import { SharedButtonComponent } from '../shared/components/button/button.js';
 })
 export class LoginComponent {
   loginForm: FormGroup;
+  isLoading = false;
+  error = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -55,7 +70,17 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log('Login minimalista exitoso:', this.loginForm.value);
+      this.isLoading = true;
+      this.error = '';
+      this.authService.login(this.loginForm.value).subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard']);
+        },
+        error: () => {
+          this.isLoading = false;
+          this.error = 'Credenciales inválidas o servidor inoperativo';
+        }
+      });
     }
   }
 }
