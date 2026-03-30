@@ -42,6 +42,13 @@ import { AuthService } from '../core/services/auth.service';
               >
                 Proyectos
               </button>
+              <button 
+                *ngIf="auth.hasPermission('ver:tareas')"
+                (click)="navigateToTasks()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                Tareas
+              </button>
             </div>
 
             <!-- User Menu -->
@@ -96,6 +103,13 @@ import { AuthService } from '../core/services/auth.service';
               >
                 Proyectos
               </button>
+              <button 
+                *ngIf="auth.hasPermission('ver:tareas')"
+                (click)="navigateToTasks(); toggleMobileMenu()"
+                class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+              >
+                Tareas
+              </button>
             </div>
             
             <div class="border-t border-gray-200 pt-3 mt-3">
@@ -135,6 +149,10 @@ export class LayoutComponent {
 
   navigateToProjects() {
     this.router.navigate(['/projects']);
+  }
+
+  navigateToTasks() {
+    this.router.navigate(['/tasks']);
   }
 
   navigateToCreateUser() {

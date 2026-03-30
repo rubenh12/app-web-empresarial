@@ -14,6 +14,7 @@ model User {
   refreshToken String?
   role         Role     @relation(fields: [roleId], references: [id])
   roleId       String
+  tasks        Task[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -54,6 +55,21 @@ model Project {
   status      String   @default("pendiente")
   client      Client   @relation(fields: [clientId], references: [id])
   clientId    String
+  tasks       Task[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  priority    String   @default("media")
+  status      String   @default("pendiente")
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   String
+  assignedTo  User     @relation(fields: [userId], references: [id])
+  userId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

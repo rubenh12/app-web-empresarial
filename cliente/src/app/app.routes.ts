@@ -18,7 +18,8 @@ export const routes: Routes = [
       { path: 'home', component: HomeComponent },
       { path: 'users', component: UsersComponent },
       { path: 'clients', component: ClientsComponent },
-      { path: 'projects', component: ProjectsComponent }
+      { path: 'projects', component: ProjectsComponent },
+      { path: 'tasks', loadComponent: () => import('./tasks/tasks.component').then(m => m.TasksComponent) }
     ]
   },
   { path: '**', redirectTo: 'login' }

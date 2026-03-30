@@ -1,4 +1,5 @@
 import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProjectsService, Project } from '../core/services/projects.service';
 import { AuthService } from '../core/services/auth.service';
@@ -63,6 +64,12 @@ import { ProjectFormComponent } from './project-form.component';
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button 
+                    (click)="openTasksModal(p)"
+                    class="text-blue-600 hover:text-blue-900 mr-3"
+                  >
+                    Tareas
+                  </button>
+                  <button 
                     *ngIf="canUpdateProjects"
                     (click)="openEditModal(p.id)"
                     class="text-indigo-600 hover:text-indigo-900 mr-3"
@@ -116,7 +123,8 @@ export class ProjectsComponent implements OnInit {
   constructor(
     private projectsService: ProjectsService,
     private authService: AuthService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router
   ) {}
 
   ngOnInit() { this.loadProjects(); }
@@ -144,6 +152,10 @@ export class ProjectsComponent implements OnInit {
   openEditModal(id: string) {
     this.editingProjectId.set(id);
     this.modal.open({ title: 'Gestión de Proyecto', size: 'lg' });
+  }
+
+  openTasksModal(project: Project) {
+    this.router.navigate(['/tasks'], { queryParams: { projectId: project.id } });
   }
 
   closeModal() { this.modal.close(); }

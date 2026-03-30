@@ -17,4 +17,8 @@ export enum PermissionSlug {
   CREAR_PROYECTOS = 'crear:proyectos',
   ACTUALIZAR_PROYECTOS = 'actualizar:proyectos',
   ELIMINAR_PROYECTOS = 'eliminar:proyectos',
+  VER_TAREAS = 'ver:tareas',
+  CREAR_TAREAS = 'crear:tareas',
+  ACTUALIZAR_TAREAS = 'actualizar:tareas',
+  ELIMINAR_TAREAS = 'eliminar:tareas',
 }

@@ -23,6 +23,10 @@ async function main() {
     { slug: PermissionSlug.CREAR_PROYECTOS, name: 'Agregar nuevos proyectos' },
     { slug: PermissionSlug.ACTUALIZAR_PROYECTOS, name: 'Editar proyectos existentes' },
     { slug: PermissionSlug.ELIMINAR_PROYECTOS, name: 'Eliminar proyectos del sistema' },
+    { slug: PermissionSlug.VER_TAREAS, name: 'Ver listado de tareas' },
+    { slug: PermissionSlug.CREAR_TAREAS, name: 'Agregar nuevas tareas' },
+    { slug: PermissionSlug.ACTUALIZAR_TAREAS, name: 'Editar tareas existentes' },
+    { slug: PermissionSlug.ELIMINAR_TAREAS, name: 'Eliminar tareas del sistema' },
   ];
 
   for (const p of permissions) {
