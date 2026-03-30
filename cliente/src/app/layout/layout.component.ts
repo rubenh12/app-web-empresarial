@@ -43,7 +43,7 @@ import { AuthService } from '../core/services/auth.service';
                 Clientes
               </button>
               <button 
-                *ngIf="auth.hasPermission('ver:proyectos')"
+                *ngIf="auth.hasPermission('ver:proyectos') || auth.hasPermission('ver:proyectos:asignados')"
                 (click)="navigateToProjects()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
@@ -111,7 +111,7 @@ import { AuthService } from '../core/services/auth.service';
                 Clientes
               </button>
               <button 
-                *ngIf="auth.hasPermission('ver:proyectos')"
+                *ngIf="auth.hasPermission('ver:proyectos') || auth.hasPermission('ver:proyectos:asignados')"
                 (click)="navigateToProjects(); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
               >

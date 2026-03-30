@@ -9,104 +9,64 @@ import { SharedButtonComponent } from '../../shared/components/button/button';
   standalone: true,
   imports: [CommonModule, SharedButtonComponent],
   template: `
-    <div class="space-y-8">
-      <!-- Welcome Section -->
-      <div class="bg-white rounded-lg shadow-md p-8">
-        <div class="text-center">
-          <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mx-auto mb-6">
-            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 text-center animate-fade-in">
+        <div>
+          <div class="mx-auto h-24 w-24 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 mb-6 group hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-inner">
+            <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
             </svg>
           </div>
-          <h2 class="text-3xl font-bold text-gray-900 mb-4">
-            Bienvenido al Panel Maestro
+          <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+            ¡Bienvenido de nuevo!
           </h2>
-          <p class="text-gray-600 max-w-2xl mx-auto mb-8">
-            Este es tu centro de operaciones empresariales. Los datos y acciones disponibles dependen directamente de tus permisos de administrador.
-          </p>
-          
-          <!-- Quick Actions -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            <app-shared-button 
-              *ngIf="auth.hasPermission('ver:usuarios')"
-              label="Ver Usuarios" 
-              (click)="navigateTo('users')" 
-              type="button" 
-            />
-            <app-shared-button 
-              *ngIf="auth.hasPermission('crear:usuarios') || auth.hasPermission('actualizar:usuarios') || auth.hasPermission('eliminar:usuarios')"
-              label="Ver Roles" 
-              (click)="navigateTo('roles')" 
-              type="button" 
-            />
-            <app-shared-button 
-              *ngIf="auth.hasPermission('ver:clientes')"
-              label="Ver Clientes" 
-              (click)="navigateTo('clients')" 
-              type="button" 
-            />
-            <app-shared-button 
-              *ngIf="auth.hasPermission('ver:proyectos') || auth.hasPermission('ver:proyectos:asignados')"
-              label="Ver Proyectos" 
-              (click)="navigateTo('projects')" 
-              type="button" 
-            />
-            <app-shared-button 
-              *ngIf="auth.hasPermission('ver:tareas')"
-              label="Ver Tareas" 
-              (click)="navigateTo('tasks')" 
-              type="button" 
-            />
+          <div class="mt-6 space-y-2 mb-8">
+            <p class="text-2xl font-bold text-blue-600">
+              {{ auth.user()?.name }}
+            </p>
+            <p class="text-slate-500 font-medium">
+              {{ auth.user()?.email }}
+            </p>
           </div>
-        </div>
-      </div>
 
-      <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0 bg-blue-100 rounded-lg p-3">
-              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-              </svg>
-            </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Usuarios Activos</dt>
-                <dd class="text-lg font-medium text-gray-900">--</dd>
-              </dl>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0 bg-green-100 rounded-lg p-3">
-              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Sistema Online</dt>
-                <dd class="text-lg font-medium text-gray-900">Activo</dd>
-              </dl>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0 bg-purple-100 rounded-lg p-3">
-              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Última Actividad</dt>
-                <dd class="text-lg font-medium text-gray-900">Ahora</dd>
-              </dl>
+          <div class="grid grid-cols-1 gap-3 pt-6 border-t border-slate-50">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Accesos Rápidos</p>
+            <div class="flex flex-wrap justify-center gap-2">
+              <app-shared-button 
+                *ngIf="auth.hasPermission('ver:usuarios')"
+                label="Usuarios" 
+                (click)="navigateTo('users')" 
+                variant="secondary"
+                size="sm"
+              />
+              <app-shared-button 
+                *ngIf="auth.hasPermission('crear:usuarios') || auth.hasPermission('actualizar:usuarios') || auth.hasPermission('eliminar:usuarios')"
+                label="Roles" 
+                (click)="navigateTo('roles')" 
+                variant="secondary"
+                size="sm"
+              />
+              <app-shared-button 
+                *ngIf="auth.hasPermission('ver:clientes')"
+                label="Clientes" 
+                (click)="navigateTo('clients')" 
+                variant="secondary"
+                size="sm"
+              />
+              <app-shared-button 
+                *ngIf="auth.hasPermission('ver:proyectos') || auth.hasPermission('ver:proyectos:asignados')"
+                label="Proyectos" 
+                (click)="navigateTo('projects')" 
+                variant="secondary"
+                size="sm"
+              />
+              <app-shared-button 
+                *ngIf="auth.hasPermission('ver:tareas')"
+                label="Tareas" 
+                (click)="navigateTo('tasks')" 
+                variant="secondary"
+                size="sm"
+              />
             </div>
           </div>
         </div>
