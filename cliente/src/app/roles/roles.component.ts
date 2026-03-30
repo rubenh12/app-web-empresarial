@@ -136,13 +136,12 @@ export class RolesComponent implements OnInit {
   }
 
   get canViewRoles() {
-    // Solo admins o personas que pueden gestionar usuarios pueden ver esto
-    return this.authService.hasPermission('CREAR_USUARIOS') || 
-           this.authService.hasPermission('ACTUALIZAR_USUARIOS') ||
-           this.authService.hasPermission('ELIMINAR_USUARIOS');
+    return this.authService.hasPermission('CREAR_USUARIOS') ||
+      this.authService.hasPermission('ACTUALIZAR_USUARIOS') ||
+      this.authService.hasPermission('ELIMINAR_USUARIOS');
   }
 
-  get canManageRoles() { 
+  get canManageRoles() {
     return this.canViewRoles;
   }
 

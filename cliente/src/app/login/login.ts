@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -53,11 +53,12 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(1)]]
     });
   }
 
@@ -77,9 +78,14 @@ export class LoginComponent {
         next: () => {
           this.router.navigate(['/home']);
         },
-        error: () => {
+        error: (err) => {
           this.isLoading = false;
-          this.error = 'Credenciales inválidas';
+          if (err?.status === 0 || err?.message === 'Request Timeout') {
+            this.error = '';
+          } else {
+            this.error = 'Credenciales inválidas';
+          }
+          this.cdr.detectChanges();
         }
       });
     }

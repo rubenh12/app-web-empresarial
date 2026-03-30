@@ -5,12 +5,13 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes.js';
 import { authInterceptor } from './core/interceptors/auth.interceptor.js';
+import { timeoutInterceptor } from './core/interceptors/timeout.interceptor.js';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([authInterceptor]))
+    provideHttpClient(withInterceptors([authInterceptor, timeoutInterceptor]))
   ]
 };

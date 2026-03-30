@@ -102,7 +102,7 @@ export class UserFormComponent implements OnInit {
   userId = input<string | null>(null);
   onSuccess = output<void>();
   onCancel = output<void>();
-  
+
   userForm: FormGroup;
   roles = signal<Role[]>([]);
   isLoading = false;
@@ -125,13 +125,13 @@ export class UserFormComponent implements OnInit {
 
     effect(() => {
       const userId = this.userId();
-      
+
       this.userForm.reset();
       this.fieldErrors.set({});
       this.error = '';
-      
+
       this.isEdit = !!userId;
-      
+
       if (this.isEdit) {
         this.userForm.get('password')?.removeValidators(Validators.required);
         this.userForm.get('password')?.updateValueAndValidity();
@@ -169,7 +169,6 @@ export class UserFormComponent implements OnInit {
         this.roles.set(roles);
       },
       error: () => {
-        // Fallback en caso de error
         this.roles.set([
           { id: '1', name: 'ADMIN', description: 'Administrador con acceso total' },
           { id: '2', name: 'USUARIO', description: 'Usuario con acceso básico' }
@@ -252,18 +251,18 @@ export class UserFormComponent implements OnInit {
     this.isLoading = false;
     const errorData = err.error || {};
     const status = err.status;
-    
+
     if (status === 409 && errorData.message) {
       const message = errorData.message;
       const fieldName = message.toLowerCase().includes('email') ? 'email' : 'campo';
-      
+
       const fieldErrors: Record<string, string> = {};
       fieldErrors[fieldName] = message;
       this.fieldErrors.set(fieldErrors);
       this.toastService.error(message);
     } else if (errorData.message) {
       this.toastService.error(errorData.message);
-      
+
       if (errorData.details && Array.isArray(errorData.details)) {
         const errors: Record<string, string> = {};
         errorData.details.forEach((detail: any) => {
