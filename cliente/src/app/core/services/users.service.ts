@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface User {
   id: string;
@@ -33,7 +34,7 @@ export interface UpdateUserDto {
   providedIn: 'root'
 })
 export class UsersService {
-  private readonly baseUrl = `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/users`;
+  private readonly baseUrl = `${environment.apiUrl}/users`;
 
   constructor(private http: HttpClient) { }
 

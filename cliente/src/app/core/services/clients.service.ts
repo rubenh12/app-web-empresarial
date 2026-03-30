@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Client {
   id: string;
@@ -33,7 +34,7 @@ export interface UpdateClientDto {
   providedIn: 'root',
 })
 export class ClientsService {
-  private readonly baseUrl = `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/clients`;
+  private readonly baseUrl = `${environment.apiUrl}/clients`;
 
   constructor(private http: HttpClient) { }
 

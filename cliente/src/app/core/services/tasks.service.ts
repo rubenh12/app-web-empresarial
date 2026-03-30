@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Task {
   id: string;
@@ -38,7 +39,7 @@ export interface UpdateTaskDto extends Partial<CreateTaskDto> { }
   providedIn: 'root'
 })
 export class TasksService {
-  private apiUrl = `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/tasks`;
+  private apiUrl = `${environment.apiUrl}/tasks`;
 
   constructor(private http: HttpClient) { }
 

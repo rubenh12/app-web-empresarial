@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ToastService } from '../services/toast.service.js';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('access_token');
@@ -18,7 +19,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      const isLogin = req.url.includes(`${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/auth/login`);
+      const isLogin = req.url.includes(`${environment.apiUrl}/auth/login`);
 
       if (!isLogin) {
         if (error.status === 401) {

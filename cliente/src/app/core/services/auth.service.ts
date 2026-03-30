@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { tap, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly baseUrl = `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/auth`;
+  private readonly baseUrl = `${environment.apiUrl}/auth`;
   private _user = signal<any>(null);
 
   constructor(private http: HttpClient, private router: Router) {

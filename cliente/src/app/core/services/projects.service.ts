@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Project {
   id: string;
@@ -33,7 +34,7 @@ export interface UpdateProjectDto extends Partial<CreateProjectDto> { }
   providedIn: 'root'
 })
 export class ProjectsService {
-  private apiUrl = `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}/projects`;
+  private apiUrl = `${environment.apiUrl}/projects`;
 
   constructor(private http: HttpClient) { }
 
