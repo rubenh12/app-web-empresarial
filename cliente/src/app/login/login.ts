@@ -34,6 +34,7 @@ import { SharedButtonComponent } from '../shared/components/button/button.js';
               [label]="isLoading ? 'Entrando...' : 'Entrar'" 
               type="submit" 
               [disabled]="loginForm.invalid || isLoading"
+              [fullWidth]="true"
             ></app-shared-button>
           </div>
           <div *ngIf="error" class="text-red-500 text-[13px] font-semibold text-center mt-4">
@@ -74,7 +75,7 @@ export class LoginComponent {
       this.error = '';
       this.authService.login(this.loginForm.value).subscribe({
         next: () => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/home']);
         },
         error: () => {
           this.isLoading = false;

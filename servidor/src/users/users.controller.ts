@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards, UsePipes, BadRequestException } from '@nestjs/common';
 import { UsersService } from './users.service.js';
 import { CreateUserSchema, UpdateUserSchema, CreateUserDto, UpdateUserDto } from './dto/user.zod.js';
 import { ZodValidationPipe } from '../common/pipes/zod.pipe.js';
@@ -32,9 +32,23 @@ export class UsersController {
 
   @Patch(':id')
   @Permissions('actualizar:usuarios')
-  @UsePipes(new ZodValidationPipe(UpdateUserSchema))
-  async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-    return this.usersService.update(id, dto);
+  async update(@Param('id') id: string, @Body() body: any) {
+    let data = body;
+    
+    if (typeof body === 'string') {
+      try {
+        data = JSON.parse(body);
+      } catch (e) {
+        throw new BadRequestException('Invalid JSON body');
+      }
+    }
+    
+    try {
+      const validated = UpdateUserSchema.parse(data);
+      return this.usersService.update(id, validated);
+    } catch (error: any) {
+      throw new BadRequestException(error.errors || 'Validation failed');
+    }
   }
 
   @Delete(':id')

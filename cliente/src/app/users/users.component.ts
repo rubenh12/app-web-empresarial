@@ -1,14 +1,17 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersService, User } from '../core/services/users.service';
 import { AuthService } from '../core/services/auth.service';
+import { ToastService } from '../core/services/toast.service';
 import { Router } from '@angular/router';
 import { SharedButtonComponent } from '../shared/components/button/button';
+import { ModalComponent } from '../shared/components/modal/modal.component';
+import { UserFormComponent } from './user-form.component';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, SharedButtonComponent],
+  imports: [CommonModule, SharedButtonComponent, ModalComponent, UserFormComponent],
   template: `
     <div class="container mx-auto p-6">
       <div class="flex justify-between items-center mb-6">
@@ -16,8 +19,9 @@ import { SharedButtonComponent } from '../shared/components/button/button';
         <app-shared-button 
           *ngIf="canCreateUsers"
           label="Nuevo Usuario" 
-          (click)="navigateToCreate()"
+          (click)="openCreateModal()"
           type="button"
+          variant="secondary"
         />
       </div>
 
@@ -56,7 +60,7 @@ import { SharedButtonComponent } from '../shared/components/button/button';
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button 
                   *ngIf="canUpdateUsers"
-                  (click)="navigateToEdit(user.id)"
+                  (click)="openEditModal(user.id)"
                   class="text-indigo-600 hover:text-indigo-900 mr-3"
                 >
                   Editar
@@ -73,16 +77,51 @@ import { SharedButtonComponent } from '../shared/components/button/button';
           </tbody>
         </table>
       </div>
+
+      <!-- Modal para confirmar eliminación -->
+      <app-modal #deleteModal>
+        <div class="text-center">
+          <p class="mb-6">¿Estás seguro de que deseas eliminar este usuario?</p>
+          <div class="flex justify-center gap-4">
+            <app-shared-button
+              label="Cancelar"
+              type="button"
+              (click)="closeDeleteModal()"
+            />
+            <app-shared-button
+              label="Eliminar"
+              type="button"
+              (click)="confirmDelete()"
+              variant="danger"
+            />
+          </div>
+        </div>
+      </app-modal>
+
+      <!-- Modal para crear/editar usuarios -->
+      <app-modal #modal>
+        <app-user-form 
+          [userId]="editingUserId()"
+          (onSuccess)="onFormSuccess()"
+          (onCancel)="closeModal()"
+        ></app-user-form>
+      </app-modal>
     </div>
   `
 })
 export class UsersComponent implements OnInit {
   users = signal<User[]>([]);
   isLoading = signal(true);
+  editingUserId = signal<string | null>(null);
+  userToDelete = signal<string | null>(null);
+
+  @ViewChild('modal') modal!: ModalComponent;
+  @ViewChild('deleteModal') deleteModal!: ModalComponent;
 
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
+    private toastService: ToastService,
     private router: Router
   ) {}
 
@@ -115,19 +154,47 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  navigateToCreate() {
-    this.router.navigate(['/users/create']);
+  openCreateModal() {
+    this.editingUserId.set(null);
+    this.modal.open({ title: 'Nuevo Usuario', size: 'md' });
   }
 
-  navigateToEdit(id: string) {
-    this.router.navigate(['/users/edit', id]);
+  openEditModal(userId: string) {
+    this.editingUserId.set(userId);
+    this.modal.open({ title: 'Editar Usuario', size: 'md' });
+  }
+
+  closeModal() {
+    this.modal.close();
+  }
+
+  onFormSuccess() {
+    this.closeModal();
+    this.loadUsers();
   }
 
   deleteUser(id: string) {
-    if (confirm('¿Estás seguro de eliminar este usuario?')) {
+    this.userToDelete.set(id);
+    this.deleteModal.open({ title: 'Confirmar Eliminación', size: 'sm' });
+  }
+
+  closeDeleteModal() {
+    this.deleteModal.close();
+    this.userToDelete.set(null);
+  }
+
+  confirmDelete() {
+    const id = this.userToDelete();
+    if (id) {
       this.usersService.remove(id).subscribe({
         next: () => {
+          this.toastService.success('Usuario eliminado correctamente');
+          this.closeDeleteModal();
           this.loadUsers();
+        },
+        error: () => {
+          this.toastService.error('Error al eliminar el usuario');
+          this.closeDeleteModal();
         }
       });
     }

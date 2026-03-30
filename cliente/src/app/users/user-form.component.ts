@@ -1,10 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, input, output, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService, User, CreateUserDto, UpdateUserDto } from '../core/services/users.service';
 import { SharedInputComponent } from '../shared/components/input/input';
 import { SharedButtonComponent } from '../shared/components/button/button';
+import { ToastService } from '../core/services/toast.service';
 
 interface Role {
   id: string;
@@ -21,12 +22,13 @@ interface Role {
       <div class="bg-white rounded-lg shadow-lg p-8">
         <h1 class="text-3xl font-bold mb-6">{{ isEdit ? 'Editar Usuario' : 'Nuevo Usuario' }}</h1>
 
-        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
           <app-shared-input
             label="Nombre"
             type="text"
             placeholder="Nombre completo"
             [control]="getNameControl()"
+            [error]="fieldErrors()['name']"
           />
 
           <app-shared-input
@@ -34,6 +36,7 @@ interface Role {
             type="email"
             placeholder="correo@ejemplo.com"
             [control]="getEmailControl()"
+            [error]="fieldErrors()['email']"
           />
 
           <app-shared-input
@@ -42,6 +45,7 @@ interface Role {
             type="password"
             placeholder="Mínimo 6 caracteres"
             [control]="getPasswordControl()"
+            [error]="fieldErrors()['password']"
           />
 
           <app-shared-input
@@ -50,6 +54,7 @@ interface Role {
             type="password"
             placeholder="Dejar en blanco para no cambiar"
             [control]="getPasswordControl()"
+            [error]="fieldErrors()['password']"
           />
 
           <div>
@@ -65,6 +70,9 @@ interface Role {
             </select>
             <div *ngIf="getRoleControl()?.invalid && getRoleControl()?.touched" class="text-red-500 text-sm mt-1">
               El rol es requerido
+            </div>
+            <div *ngIf="fieldErrors()['roleId']" class="text-red-500 text-sm mt-1">
+              {{ fieldErrors()['roleId'] }}
             </div>
           </div>
 
@@ -91,17 +99,22 @@ interface Role {
   `
 })
 export class UserFormComponent implements OnInit {
+  userId = input<string | null>(null);
+  onSuccess = output<void>();
+  onCancel = output<void>();
+  
   userForm: FormGroup;
   roles = signal<Role[]>([]);
   isLoading = false;
   error = '';
   isEdit = false;
+  fieldErrors = signal<Record<string, string>>({});
 
   constructor(
     private fb: FormBuilder,
     private usersService: UsersService,
     private router: Router,
-    private route: ActivatedRoute
+    private toastService: ToastService
   ) {
     this.userForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -110,11 +123,21 @@ export class UserFormComponent implements OnInit {
       roleId: ['', Validators.required]
     });
 
-    // Si es edición, la contraseña no es requerida
-    this.route.url.subscribe(url => {
-      this.isEdit = url.some(segment => segment.path === 'edit');
+    effect(() => {
+      const userId = this.userId();
+      
+      this.userForm.reset();
+      this.fieldErrors.set({});
+      this.error = '';
+      
+      this.isEdit = !!userId;
+      
       if (this.isEdit) {
         this.userForm.get('password')?.removeValidators(Validators.required);
+        this.userForm.get('password')?.updateValueAndValidity();
+        this.loadUser(userId!);
+      } else {
+        this.userForm.get('password')?.addValidators([Validators.required, Validators.minLength(6)]);
         this.userForm.get('password')?.updateValueAndValidity();
       }
     });
@@ -122,13 +145,6 @@ export class UserFormComponent implements OnInit {
 
   ngOnInit() {
     this.loadRoles();
-    
-    if (this.isEdit) {
-      const userId = this.route.snapshot.paramMap.get('id');
-      if (userId) {
-        this.loadUser(userId);
-      }
-    }
   }
 
   getNameControl() {
@@ -148,11 +164,27 @@ export class UserFormComponent implements OnInit {
   }
 
   loadRoles() {
-    // Mock de roles - en producción esto vendría del backend
-    this.roles.set([
-      { id: '1', name: 'ADMIN', description: 'Administrador con acceso total' },
-      { id: '2', name: 'USUARIO', description: 'Usuario con acceso básico' }
-    ]);
+    this.usersService.findAll().subscribe({
+      next: (users) => {
+        const uniqueRoles = users.reduce((acc: any[], user) => {
+          if (!acc.find(role => role.id === user.role.id)) {
+            acc.push({
+              id: user.role.id,
+              name: user.role.name,
+              description: user.role.description || user.role.name
+            });
+          }
+          return acc;
+        }, []);
+        this.roles.set(uniqueRoles);
+      },
+      error: () => {
+        this.roles.set([
+          { id: '1', name: 'ADMIN', description: 'Administrador con acceso total' },
+          { id: '2', name: 'USUARIO', description: 'Usuario con acceso básico' }
+        ]);
+      }
+    });
   }
 
   loadUser(id: string) {
@@ -177,11 +209,12 @@ export class UserFormComponent implements OnInit {
     if (this.userForm.valid) {
       this.isLoading = true;
       this.error = '';
+      this.fieldErrors.set({});
 
       const formData = this.userForm.value;
 
       if (this.isEdit) {
-        const userId = this.route.snapshot.paramMap.get('id')!;
+        const userId = this.userId()!;
         const updateDto: UpdateUserDto = {
           name: formData.name,
           email: formData.email,
@@ -194,11 +227,12 @@ export class UserFormComponent implements OnInit {
 
         this.usersService.update(userId, updateDto).subscribe({
           next: () => {
-            this.router.navigate(['/users']);
-          },
-          error: () => {
-            this.error = 'Error al actualizar el usuario';
             this.isLoading = false;
+            this.toastService.success('Usuario actualizado correctamente');
+            this.onSuccess.emit();
+          },
+          error: (err) => {
+            this.handleError(err);
           }
         });
       } else {
@@ -211,18 +245,50 @@ export class UserFormComponent implements OnInit {
 
         this.usersService.create(createDto).subscribe({
           next: () => {
-            this.router.navigate(['/users']);
-          },
-          error: () => {
-            this.error = 'Error al crear el usuario';
             this.isLoading = false;
+            this.toastService.success('Usuario creado correctamente');
+            this.onSuccess.emit();
+          },
+          error: (err) => {
+            this.handleError(err);
           }
         });
       }
     }
   }
 
+  private handleError(err: any) {
+    this.isLoading = false;
+    const errorData = err.error || {};
+    const status = err.status;
+    
+    if (status === 409 && errorData.message) {
+      const message = errorData.message;
+      const fieldName = message.toLowerCase().includes('email') ? 'email' : 'campo';
+      
+      const fieldErrors: Record<string, string> = {};
+      fieldErrors[fieldName] = message;
+      this.fieldErrors.set(fieldErrors);
+      this.toastService.error(message);
+    } else if (errorData.message) {
+      this.toastService.error(errorData.message);
+      
+      if (errorData.details && Array.isArray(errorData.details)) {
+        const errors: Record<string, string> = {};
+        errorData.details.forEach((detail: any) => {
+          const field = detail.path?.[0] || 'campo';
+          const message = detail.message || 'Valor inválido';
+          errors[field] = message;
+        });
+        this.fieldErrors.set(errors);
+      }
+    } else {
+      this.toastService.error('Error al procesar la solicitud');
+      this.error = 'Error al procesar la solicitud';
+    }
+  }
+
   cancel() {
-    this.router.navigate(['/users']);
+    this.onCancel.emit();
   }
 }

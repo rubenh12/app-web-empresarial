@@ -5,11 +5,49 @@ export class ZodValidationPipe implements PipeTransform {
   constructor(private schema: ZodSchema) {}
 
   transform(value: unknown, metadata: ArgumentMetadata) {
+    let parsedValue = value;
+    if (typeof value === 'string') {
+      try {
+        parsedValue = JSON.parse(value);
+      } catch (e) {
+        // No se pudo parsear, usar valor original
+      }
+    }
+    
     try {
-      const parsedValue = this.schema.parse(value);
-      return parsedValue;
+      const validatedValue = this.schema.parse(parsedValue);
+      return validatedValue;
     } catch (error) {
-      throw new BadRequestException('Fallo en la validación: ' + (error as any).errors.map((e: any) => e.message).join(', '));
+      const zodError = error as any;
+      let errorMessage = 'Error de validación';
+      let details: any[] = [];
+      
+      if (zodError?.errors && Array.isArray(zodError.errors)) {
+        details = zodError.errors;
+        const fieldErrors = zodError.errors.map((err: any) => {
+          const field = err.path?.[0] || 'campo';
+          const message = err.message || 'Valor inválido';
+          return `${field}: ${message}`;
+        });
+        errorMessage = fieldErrors.join(', ');
+      } else if (zodError?.issues && Array.isArray(zodError.issues)) {
+        details = zodError.issues;
+        const fieldErrors = zodError.issues.map((err: any) => {
+          const field = err.path?.[0] || 'campo';
+          const message = err.message || 'Valor inválido';
+          return `${field}: ${message}`;
+        });
+        errorMessage = fieldErrors.join(', ');
+      }
+
+      const response = {
+        message: errorMessage,
+        error: 'Bad Request',
+        statusCode: 400,
+        details: details
+      };
+
+      throw new BadRequestException(response);
     }
   }
 }
