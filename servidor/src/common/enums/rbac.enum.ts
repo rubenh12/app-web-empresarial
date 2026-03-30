@@ -1,27 +1,24 @@
-export enum RoleName {
-  ADMIN = 'ADMIN',
-  USUARIO = 'USUARIO',
-}
+export const RoleName = {
+  ADMIN: 'ADMIN',
+  USUARIO: 'USUARIO',
+} as const
 
-export enum PermissionSlug {
-  VER_USUARIOS = 'ver:usuarios',
-  CREAR_USUARIOS = 'crear:usuarios',
-  ACTUALIZAR_USUARIOS = 'actualizar:usuarios',
-  ELIMINAR_USUARIOS = 'eliminar:usuarios',
-
-  VER_CLIENTES = 'ver:clientes',
-  CREAR_CLIENTES = 'crear:clientes',
-  ACTUALIZAR_CLIENTES = 'actualizar:clientes',
-  ELIMINAR_CLIENTES = 'eliminar:clientes',
-
-  VER_PROYECTOS = 'ver:proyectos',
-  VER_PROYECTOS_ASIGNADOS = 'ver:proyectos:asignados',
-  CREAR_PROYECTOS = 'crear:proyectos',
-  ACTUALIZAR_PROYECTOS = 'actualizar:proyectos',
-  ELIMINAR_PROYECTOS = 'eliminar:proyectos',
-
-  VER_TAREAS = 'ver:tareas',
-  CREAR_TAREAS = 'crear:tareas',
-  ACTUALIZAR_TAREAS = 'actualizar:tareas',
-  ELIMINAR_TAREAS = 'eliminar:tareas',
-}
+export const PermissionSlug = {
+  VER_USUARIOS: 'VER_USUARIOS',
+  CREAR_USUARIOS: 'CREAR_USUARIOS',
+  ACTUALIZAR_USUARIOS: 'ACTUALIZAR_USUARIOS',
+  ELIMINAR_USUARIOS: 'ELIMINAR_USUARIOS',
+  VER_CLIENTES: 'VER_CLIENTES',
+  CREAR_CLIENTES: 'CREAR_CLIENTES',
+  ACTUALIZAR_CLIENTES: 'ACTUALIZAR_CLIENTES',
+  ELIMINAR_CLIENTES: 'ELIMINAR_CLIENTES',
+  VER_PROYECTOS: 'VER_PROYECTOS',
+  VER_PROYECTOS_ASIGNADOS: 'VER_PROYECTOS_ASIGNADOS',
+  CREAR_PROYECTOS: 'CREAR_PROYECTOS',
+  ACTUALIZAR_PROYECTOS: 'ACTUALIZAR_PROYECTOS',
+  ELIMINAR_PROYECTOS: 'ELIMINAR_PROYECTOS',
+  VER_TAREAS: 'VER_TAREAS',
+  CREAR_TAREAS: 'CREAR_TAREAS',
+  ACTUALIZAR_TAREAS: 'ACTUALIZAR_TAREAS',
+  ELIMINAR_TAREAS: 'ELIMINAR_TAREAS',
+} as const

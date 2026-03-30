@@ -6,8 +6,7 @@ async function bootstrap() {
     rawBody: true,
     bodyParser: true
   });
-  
-  // Habilitar CORS
+
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -16,8 +15,8 @@ async function bootstrap() {
     preflightContinue: false,
     optionsSuccessStatus: 204
   });
-  
+
   await app.listen(process.env.PORT ?? 3000);
-  console.log(`🚀 Servidor corriendo en http://localhost:${process.env.PORT ?? 3000}`);
+  console.log(`Servidor corriendo en http://localhost:${process.env.PORT ?? 3000}`);
 }
 bootstrap();

@@ -1,14 +1,9 @@
-import { PrismaClient } from '@prisma/client';
-import { PrismaLibSql } from '@prisma/adapter-libsql';
-import * as bcrypt from 'bcryptjs';
-import { RoleName, PermissionSlug } from '../src/common/enums/rbac.enum.js';
-import 'dotenv/config';
+import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
+import { RoleName, PermissionSlug } from '../src/common/enums/rbac.enum.ts'
+import 'dotenv/config'
 
-const config = {
-  url: process.env.DATABASE_URL || 'file:./dev.db',
-};
-const adapter = new PrismaLibSql(config);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient()
 
 async function main() {
   const permissions = [
@@ -29,14 +24,14 @@ async function main() {
     { slug: PermissionSlug.CREAR_TAREAS, name: 'Agregar nuevas tareas' },
     { slug: PermissionSlug.ACTUALIZAR_TAREAS, name: 'Editar tareas existentes' },
     { slug: PermissionSlug.ELIMINAR_TAREAS, name: 'Eliminar tareas del sistema' },
-  ];
+  ]
 
   for (const p of permissions) {
     await prisma.permission.upsert({
       where: { slug: p.slug },
       update: {},
       create: p,
-    });
+    })
   }
 
   const adminRole = await prisma.role.upsert({
@@ -53,7 +48,7 @@ async function main() {
         connect: permissions.map(p => ({ slug: p.slug })),
       },
     },
-  });
+  })
 
   await prisma.role.upsert({
     where: { name: RoleName.USUARIO },
@@ -63,7 +58,7 @@ async function main() {
           { slug: PermissionSlug.VER_USUARIOS },
           { slug: PermissionSlug.VER_PROYECTOS_ASIGNADOS },
           { slug: PermissionSlug.VER_TAREAS },
-          { slug: PermissionSlug.ACTUALIZAR_TAREAS }
+          { slug: PermissionSlug.ACTUALIZAR_TAREAS },
         ],
       },
     },
@@ -75,13 +70,13 @@ async function main() {
           { slug: PermissionSlug.VER_USUARIOS },
           { slug: PermissionSlug.VER_PROYECTOS_ASIGNADOS },
           { slug: PermissionSlug.VER_TAREAS },
-          { slug: PermissionSlug.ACTUALIZAR_TAREAS }
+          { slug: PermissionSlug.ACTUALIZAR_TAREAS },
         ],
       },
     },
-  });
+  })
 
-  const hashedPassword = await bcrypt.hash('12345678', 10);
+  const hashedPassword = await bcrypt.hash('12345678', 10)
 
   await prisma.user.upsert({
     where: { email: 'admin@gmail.com' },
@@ -92,18 +87,17 @@ async function main() {
       password: hashedPassword,
       roleId: adminRole.id,
     },
-  });
+  })
 
-  console.log('--- SEED COMPLETADO CON ÉXITO ---');
-  console.log('Login: admin@gmail.com / 12345678');
-  console.log('Roles definidos: ADMIN (Acceso Total), USUARIO (Solo Lectura)');
+  console.log('SEED COMPLETADO')
+  console.log('Login: admin@gmail.com / 12345678')
 }
 
 main()
   .catch((e) => {
-    console.error(e);
-    process.exit(1);
+    console.error(e)
+    process.exit(1)
   })
   .finally(async () => {
-    await prisma.$disconnect();
-  });
+    await prisma.$disconnect()
+  })
