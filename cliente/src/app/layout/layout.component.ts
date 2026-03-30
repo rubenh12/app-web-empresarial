@@ -9,7 +9,6 @@ import { AuthService } from '../core/services/auth.service';
   imports: [CommonModule, RouterOutlet],
   template: `
     <div class="min-h-screen bg-gray-50">
-      <!-- Navbar -->
       <nav class="bg-white shadow-md border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between items-center h-16">
@@ -33,8 +32,15 @@ import { AuthService } from '../core/services/auth.service';
                 *ngIf="auth.hasPermission('ver:clientes')"
                 (click)="navigateToClients()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
-              >
+               >
                 Clientes
+              </button>
+              <button 
+                *ngIf="auth.hasPermission('ver:proyectos')"
+                (click)="navigateToProjects()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                Proyectos
               </button>
             </div>
 
@@ -83,6 +89,13 @@ import { AuthService } from '../core/services/auth.service';
               >
                 Clientes
               </button>
+              <button 
+                *ngIf="auth.hasPermission('ver:proyectos')"
+                (click)="navigateToProjects(); toggleMobileMenu()"
+                class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+              >
+                Proyectos
+              </button>
             </div>
             
             <div class="border-t border-gray-200 pt-3 mt-3">
@@ -101,7 +114,6 @@ import { AuthService } from '../core/services/auth.service';
         </div>
       </nav>
 
-      <!-- Main Content -->
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <router-outlet></router-outlet>
       </main>
@@ -119,6 +131,10 @@ export class LayoutComponent {
 
   navigateToClients() {
     this.router.navigate(['/clients']);
+  }
+
+  navigateToProjects() {
+    this.router.navigate(['/projects']);
   }
 
   navigateToCreateUser() {
