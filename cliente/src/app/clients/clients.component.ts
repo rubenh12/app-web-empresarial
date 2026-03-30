@@ -63,19 +63,32 @@ import { ClientFormComponent } from './client-form.component';
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <!-- Escritorio -->
+                  <div class="hidden md:flex justify-end gap-3">
+                    <button 
+                      *ngIf="canUpdateClients"
+                      (click)="openEditModal(client.id)"
+                      class="text-blue-600 hover:text-blue-900 font-semibold"
+                    >
+                      Editar
+                    </button>
+                    <button 
+                      *ngIf="canDeleteClients"
+                      (click)="deleteClient(client.id)"
+                      class="text-red-600 hover:text-red-900 font-semibold"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+
+                  <!-- Móvil -->
                   <button 
-                    *ngIf="canUpdateClients"
-                    (click)="openEditModal(client.id)"
-                    class="text-indigo-600 hover:text-indigo-900 mr-3"
+                    (click)="openActionsModal(client)" 
+                    class="md:hidden p-2 hover:bg-slate-100 rounded-full transition-colors"
                   >
-                    Editar
-                  </button>
-                  <button 
-                    *ngIf="canDeleteClients"
-                    (click)="deleteClient(client.id)"
-                    class="text-red-600 hover:text-red-900"
-                  >
-                    Eliminar
+                    <svg class="w-5 h-5 text-slate-500" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                    </svg>
                   </button>
                 </td>
               </tr>
@@ -104,6 +117,30 @@ import { ClientFormComponent } from './client-form.component';
           (onCancel)="closeModal()"
         ></app-client-form>
       </app-modal>
+
+      <!-- Modal para acciones móviles -->
+      <app-modal #actionsModal>
+        <div class="flex flex-col gap-4 p-2">
+          <h3 class="text-lg font-bold text-slate-800 border-b pb-2 mb-2">{{ selectedClient()?.name }}</h3>
+          <app-shared-button 
+            *ngIf="canUpdateClients"
+            label="Editar Cliente" 
+            variant="secondary"
+            (click)="closeActionsAndEdit()"
+          />
+          <app-shared-button 
+            *ngIf="canDeleteClients"
+            label="Eliminar Cliente" 
+            variant="danger"
+            (click)="closeActionsAndDelete()"
+          />
+          <app-shared-button 
+            label="Cerrar" 
+            variant="secondary"
+            (click)="actionsModal.close()"
+          />
+        </div>
+      </app-modal>
     </div>
   `
 })
@@ -112,9 +149,11 @@ export class ClientsComponent implements OnInit {
   isLoading = signal(true);
   editingClientId = signal<string | null>(null);
   clientToDelete = signal<string | null>(null);
+  selectedClient = signal<Client | null>(null);
 
   @ViewChild('modal') modal!: ModalComponent;
   @ViewChild('deleteModal') deleteModal!: ModalComponent;
+  @ViewChild('actionsModal') actionsModal!: ModalComponent;
 
   constructor(
     private clientsService: ClientsService,
@@ -185,6 +224,27 @@ export class ClientsComponent implements OnInit {
           this.closeDeleteModal();
         }
       });
+    }
+  }
+
+  openActionsModal(client: Client) {
+    this.selectedClient.set(client);
+    this.actionsModal.open({ title: 'Acciones de Cliente', size: 'sm' });
+  }
+
+  closeActionsAndEdit() {
+    const client = this.selectedClient();
+    this.actionsModal.close();
+    if (client) {
+      this.openEditModal(client.id);
+    }
+  }
+
+  closeActionsAndDelete() {
+    const client = this.selectedClient();
+    this.actionsModal.close();
+    if (client) {
+      this.deleteClient(client.id);
     }
   }
 }

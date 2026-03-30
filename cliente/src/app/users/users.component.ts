@@ -58,19 +58,32 @@ import { UserFormComponent } from './user-form.component';
                 {{ formatDate(user.createdAt) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <!-- Escritorio: Botones directos -->
+                <div class="hidden md:flex justify-end gap-3">
+                  <button 
+                    *ngIf="canUpdateUsers"
+                    (click)="openEditModal(user.id)"
+                    class="text-blue-600 hover:text-blue-900 font-semibold"
+                  >
+                    Editar
+                  </button>
+                  <button 
+                    *ngIf="canDeleteUsers"
+                    (click)="deleteUser(user.id)"
+                    class="text-red-600 hover:text-red-900 font-semibold"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+
+                <!-- Móvil: Menú de tres puntos -->
                 <button 
-                  *ngIf="canUpdateUsers"
-                  (click)="openEditModal(user.id)"
-                  class="text-indigo-600 hover:text-indigo-900 mr-3"
+                  (click)="openActionsModal(user)" 
+                  class="md:hidden p-2 hover:bg-slate-100 rounded-full transition-colors"
                 >
-                  Editar
-                </button>
-                <button 
-                  *ngIf="canDeleteUsers"
-                  (click)="deleteUser(user.id)"
-                  class="text-red-600 hover:text-red-900"
-                >
-                  Eliminar
+                  <svg class="w-5 h-5 text-slate-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                  </svg>
                 </button>
               </td>
             </tr>
@@ -107,6 +120,30 @@ import { UserFormComponent } from './user-form.component';
           (onCancel)="closeModal()"
         ></app-user-form>
       </app-modal>
+
+      <!-- Modal para acciones móviles -->
+      <app-modal #actionsModal>
+        <div class="flex flex-col gap-4 p-2">
+          <h3 class="text-lg font-bold text-slate-800 border-b pb-2 mb-2">{{ selectedUser()?.name }}</h3>
+          <app-shared-button 
+            *ngIf="canUpdateUsers"
+            label="Editar Usuario" 
+            variant="secondary"
+            (click)="closeActionsAndEdit()"
+          />
+          <app-shared-button 
+            *ngIf="canDeleteUsers"
+            label="Eliminar Usuario" 
+            variant="danger"
+            (click)="closeActionsAndDelete()"
+          />
+          <app-shared-button 
+            label="Cerrar" 
+            variant="secondary"
+            (click)="actionsModal.close()"
+          />
+        </div>
+      </app-modal>
     </div>
   `
 })
@@ -115,9 +152,11 @@ export class UsersComponent implements OnInit {
   isLoading = signal(true);
   editingUserId = signal<string | null>(null);
   userToDelete = signal<string | null>(null);
+  selectedUser = signal<User | null>(null);
 
   @ViewChild('modal') modal!: ModalComponent;
   @ViewChild('deleteModal') deleteModal!: ModalComponent;
+  @ViewChild('actionsModal') actionsModal!: ModalComponent;
 
   constructor(
     private usersService: UsersService,
@@ -203,5 +242,26 @@ export class UsersComponent implements OnInit {
 
   formatDate(date: string) {
     return new Date(date).toLocaleDateString('es-ES');
+  }
+
+  openActionsModal(user: User) {
+    this.selectedUser.set(user);
+    this.actionsModal.open({ title: 'Acciones de Usuario', size: 'sm' });
+  }
+
+  closeActionsAndEdit() {
+    const user = this.selectedUser();
+    this.actionsModal.close();
+    if (user) {
+      this.openEditModal(user.id);
+    }
+  }
+
+  closeActionsAndDelete() {
+    const user = this.selectedUser();
+    this.actionsModal.close();
+    if (user) {
+      this.deleteUser(user.id);
+    }
   }
 }

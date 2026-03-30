@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RolesService, Role } from '../core/services/roles.service';
 import { AuthService } from '../core/services/auth.service';
 import { ToastService } from '../core/services/toast.service';
+import { Router } from '@angular/router';
 import { SharedButtonComponent } from '../shared/components/button/button';
 import { ModalComponent } from '../shared/components/modal/modal.component';
 import { RoleFormComponent } from './role-form.component';
@@ -121,17 +122,28 @@ export class RolesComponent implements OnInit {
   constructor(
     private rolesService: RolesService,
     private authService: AuthService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router
   ) { }
 
   ngOnInit() {
+    if (!this.canViewRoles) {
+      this.toastService.error('No tienes permiso para ver esta sección');
+      this.router.navigate(['/home']);
+      return;
+    }
     this.loadRoles();
   }
 
-  get canManageRoles() { 
+  get canViewRoles() {
+    // Solo admins o personas que pueden gestionar usuarios pueden ver esto
     return this.authService.hasPermission('crear:usuarios') || 
            this.authService.hasPermission('actualizar:usuarios') ||
            this.authService.hasPermission('eliminar:usuarios');
+  }
+
+  get canManageRoles() { 
+    return this.canViewRoles;
   }
 
   loadRoles() {

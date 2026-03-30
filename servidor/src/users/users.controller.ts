@@ -9,7 +9,7 @@ import { Permissions } from '../common/decorators/permissions.decorator.js';
 @UseGuards(AtGuard, PermissionsGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService) { }
 
   @Get()
   @Permissions('ver:usuarios', 'ver:tareas', 'crear:tareas', 'actualizar:tareas')
@@ -40,7 +40,7 @@ export class UsersController {
   @Permissions('actualizar:usuarios')
   async update(@Param('id') id: string, @Body() body: any) {
     let data = body;
-    
+
     if (typeof body === 'string') {
       try {
         data = JSON.parse(body);
@@ -48,7 +48,7 @@ export class UsersController {
         throw new BadRequestException('Invalid JSON body');
       }
     }
-    
+
     try {
       const validated = UpdateUserSchema.parse(data);
       return this.usersService.update(id, validated);

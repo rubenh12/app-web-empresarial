@@ -26,12 +26,36 @@ import { SharedButtonComponent } from '../../shared/components/button/button';
           </p>
           
           <!-- Quick Actions -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            <app-shared-button
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            <app-shared-button 
               *ngIf="auth.hasPermission('ver:usuarios')"
-              label="Ver Usuarios"
-              (click)="navigateToUsers()"
-              type="button"
+              label="Ver Usuarios" 
+              (click)="navigateTo('users')" 
+              type="button" 
+            />
+            <app-shared-button 
+              *ngIf="auth.hasPermission('crear:usuarios') || auth.hasPermission('actualizar:usuarios') || auth.hasPermission('eliminar:usuarios')"
+              label="Ver Roles" 
+              (click)="navigateTo('roles')" 
+              type="button" 
+            />
+            <app-shared-button 
+              *ngIf="auth.hasPermission('ver:clientes')"
+              label="Ver Clientes" 
+              (click)="navigateTo('clients')" 
+              type="button" 
+            />
+            <app-shared-button 
+              *ngIf="auth.hasPermission('ver:proyectos') || auth.hasPermission('ver:proyectos:asignados')"
+              label="Ver Proyectos" 
+              (click)="navigateTo('projects')" 
+              type="button" 
+            />
+            <app-shared-button 
+              *ngIf="auth.hasPermission('ver:tareas')"
+              label="Ver Tareas" 
+              (click)="navigateTo('tasks')" 
+              type="button" 
             />
           </div>
         </div>
@@ -94,11 +118,7 @@ export class HomeComponent {
   auth = inject(AuthService);
   router = inject(Router);
 
-  navigateToUsers() {
-    this.router.navigate(['/users']);
-  }
-
-  navigateToCreateUser() {
-    this.router.navigate(['/users/create']);
+  navigateTo(path: string) {
+    this.router.navigate([`/${path}`]);
   }
 }

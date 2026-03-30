@@ -79,7 +79,7 @@ export class LoginComponent {
         },
         error: () => {
           this.isLoading = false;
-          this.error = 'Credenciales inválidas o servidor inoperativo';
+          this.error = 'Credenciales inválidas';
         }
       });
     }
