@@ -2,9 +2,10 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaLibSql } from '@prisma/adapter-libsql';
 import * as bcrypt from 'bcryptjs';
 import { RoleName, PermissionSlug } from '../src/common/enums/rbac.enum.js';
+import 'dotenv/config';
 
 const config = {
-  url: 'file:./dev.db',
+  url: process.env.DATABASE_URL || 'file:./dev.db',
 };
 const adapter = new PrismaLibSql(config);
 const prisma = new PrismaClient({ adapter });

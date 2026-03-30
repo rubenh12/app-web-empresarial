@@ -29,6 +29,13 @@ import { AuthService } from '../core/services/auth.service';
                 Usuarios
               </button>
               <button 
+                *ngIf="auth.hasPermission('ver:usuarios')"
+                (click)="navigateToRoles()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                Roles
+              </button>
+              <button 
                 *ngIf="auth.hasPermission('ver:clientes')"
                 (click)="navigateToClients()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
@@ -90,6 +97,13 @@ import { AuthService } from '../core/services/auth.service';
                 Usuarios
               </button>
               <button 
+                *ngIf="auth.hasPermission('ver:usuarios')"
+                (click)="navigateToRoles(); toggleMobileMenu()"
+                class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+              >
+                Roles
+              </button>
+              <button 
                 *ngIf="auth.hasPermission('ver:clientes')"
                 (click)="navigateToClients(); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
@@ -141,6 +155,10 @@ export class LayoutComponent {
 
   navigateToUsers() {
     this.router.navigate(['/users']);
+  }
+
+  navigateToRoles() {
+    this.router.navigate(['/roles']);
   }
 
   navigateToClients() {
