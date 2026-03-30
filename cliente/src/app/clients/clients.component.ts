@@ -166,9 +166,9 @@ export class ClientsComponent implements OnInit {
     this.loadClients();
   }
 
-  get canCreateClients() { return this.authService.hasPermission('crear:clientes'); }
-  get canUpdateClients() { return this.authService.hasPermission('actualizar:clientes'); }
-  get canDeleteClients() { return this.authService.hasPermission('eliminar:clientes'); }
+  get canCreateClients() { return this.authService.hasPermission('CREAR_CLIENTES'); }
+  get canUpdateClients() { return this.authService.hasPermission('ACTUALIZAR_CLIENTES'); }
+  get canDeleteClients() { return this.authService.hasPermission('ELIMINAR_CLIENTES'); }
 
   loadClients() {
     this.isLoading.set(true);

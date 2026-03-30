@@ -129,9 +129,9 @@ export class ProjectsComponent implements OnInit {
 
   ngOnInit() { this.loadProjects(); }
 
-  get canCreateProjects() { return this.authService.hasPermission('crear:proyectos'); }
-  get canUpdateProjects() { return this.authService.hasPermission('actualizar:proyectos'); }
-  get canDeleteProjects() { return this.authService.hasPermission('eliminar:proyectos'); }
+  get canCreateProjects() { return this.authService.hasPermission('CREAR_PROYECTOS'); }
+  get canUpdateProjects() { return this.authService.hasPermission('ACTUALIZAR_PROYECTOS'); }
+  get canDeleteProjects() { return this.authService.hasPermission('ELIMINAR_PROYECTOS'); }
 
   loadProjects() {
     this.isLoading.set(true);

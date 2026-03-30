@@ -33,35 +33,35 @@ import { SharedButtonComponent } from '../../shared/components/button/button';
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Accesos Rápidos</p>
             <div class="flex flex-wrap justify-center gap-2">
               <app-shared-button 
-                *ngIf="auth.hasPermission('ver:usuarios')"
+                *ngIf="auth.hasPermission('VER_USUARIOS')"
                 label="Usuarios" 
                 (click)="navigateTo('users')" 
                 variant="secondary"
                 size="sm"
               />
               <app-shared-button 
-                *ngIf="auth.hasPermission('crear:usuarios') || auth.hasPermission('actualizar:usuarios') || auth.hasPermission('eliminar:usuarios')"
+                *ngIf="auth.hasPermission('CREAR_USUARIOS') || auth.hasPermission('ACTUALIZAR_USUARIOS') || auth.hasPermission('ELIMINAR_USUARIOS')"
                 label="Roles" 
                 (click)="navigateTo('roles')" 
                 variant="secondary"
                 size="sm"
               />
               <app-shared-button 
-                *ngIf="auth.hasPermission('ver:clientes')"
+                *ngIf="auth.hasPermission('VER_CLIENTES')"
                 label="Clientes" 
                 (click)="navigateTo('clients')" 
                 variant="secondary"
                 size="sm"
               />
               <app-shared-button 
-                *ngIf="auth.hasPermission('ver:proyectos') || auth.hasPermission('ver:proyectos:asignados')"
+                *ngIf="auth.hasPermission('VER_PROYECTOS') || auth.hasPermission('VER_PROYECTOS_ASIGNADOS')"
                 label="Proyectos" 
                 (click)="navigateTo('projects')" 
                 variant="secondary"
                 size="sm"
               />
               <app-shared-button 
-                *ngIf="auth.hasPermission('ver:tareas')"
+                *ngIf="auth.hasPermission('VER_TAREAS')"
                 label="Tareas" 
                 (click)="navigateTo('tasks')" 
                 variant="secondary"

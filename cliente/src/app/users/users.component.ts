@@ -170,15 +170,15 @@ export class UsersComponent implements OnInit {
   }
 
   get canCreateUsers() {
-    return this.authService.hasPermission('crear:usuarios');
+    return this.authService.hasPermission('CREAR_USUARIOS');
   }
 
   get canUpdateUsers() {
-    return this.authService.hasPermission('actualizar:usuarios');
+    return this.authService.hasPermission('ACTUALIZAR_USUARIOS');
   }
 
   get canDeleteUsers() {
-    return this.authService.hasPermission('eliminar:usuarios');
+    return this.authService.hasPermission('ELIMINAR_USUARIOS');
   }
 
   loadUsers() {

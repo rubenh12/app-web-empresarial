@@ -22,35 +22,35 @@ import { AuthService } from '../core/services/auth.service';
             <!-- Navigation Links -->
             <div class="hidden md:flex items-center space-x-4">
               <button 
-                *ngIf="auth.hasPermission('ver:usuarios')"
+                *ngIf="auth.hasPermission('VER_USUARIOS')"
                 (click)="navigateToUsers()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
                 Usuarios
               </button>
               <button 
-                *ngIf="auth.hasPermission('crear:usuarios') || auth.hasPermission('actualizar:usuarios') || auth.hasPermission('eliminar:usuarios')"
+                *ngIf="auth.hasPermission('CREAR_USUARIOS') || auth.hasPermission('ACTUALIZAR_USUARIOS') || auth.hasPermission('ELIMINAR_USUARIOS')"
                 (click)="navigateToRoles()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
                 Roles
               </button>
               <button 
-                *ngIf="auth.hasPermission('ver:clientes')"
+                *ngIf="auth.hasPermission('VER_CLIENTES')"
                 (click)="navigateToClients()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
                >
                 Clientes
               </button>
               <button 
-                *ngIf="auth.hasPermission('ver:proyectos') || auth.hasPermission('ver:proyectos:asignados')"
+                *ngIf="auth.hasPermission('VER_PROYECTOS') || auth.hasPermission('VER_PROYECTOS_ASIGNADOS')"
                 (click)="navigateToProjects()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
                 Proyectos
               </button>
               <button 
-                *ngIf="auth.hasPermission('ver:tareas')"
+                *ngIf="auth.hasPermission('VER_TAREAS')"
                 (click)="navigateToTasks()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
@@ -90,35 +90,35 @@ import { AuthService } from '../core/services/auth.service';
           <div *ngIf="mobileMenuOpen" class="md:hidden border-t border-gray-200 pt-4 pb-3">
             <div class="space-y-1">
               <button 
-                *ngIf="auth.hasPermission('ver:usuarios')"
+                *ngIf="auth.hasPermission('VER_USUARIOS')"
                 (click)="navigateToUsers(); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
               >
                 Usuarios
               </button>
               <button 
-                *ngIf="auth.hasPermission('crear:usuarios') || auth.hasPermission('actualizar:usuarios') || auth.hasPermission('eliminar:usuarios')"
+                *ngIf="auth.hasPermission('CREAR_USUARIOS') || auth.hasPermission('ACTUALIZAR_USUARIOS') || auth.hasPermission('ELIMINAR_USUARIOS')"
                 (click)="navigateToRoles(); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
               >
                 Roles
               </button>
               <button 
-                *ngIf="auth.hasPermission('ver:clientes')"
+                *ngIf="auth.hasPermission('VER_CLIENTES')"
                 (click)="navigateToClients(); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
               >
                 Clientes
               </button>
               <button 
-                *ngIf="auth.hasPermission('ver:proyectos') || auth.hasPermission('ver:proyectos:asignados')"
+                *ngIf="auth.hasPermission('VER_PROYECTOS') || auth.hasPermission('VER_PROYECTOS_ASIGNADOS')"
                 (click)="navigateToProjects(); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
               >
                 Proyectos
               </button>
               <button 
-                *ngIf="auth.hasPermission('ver:tareas')"
+                *ngIf="auth.hasPermission('VER_TAREAS')"
                 (click)="navigateToTasks(); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
               >

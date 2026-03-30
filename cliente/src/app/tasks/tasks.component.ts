@@ -156,9 +156,9 @@ export class TasksComponent implements OnInit {
     this.loadProjects();
   }
 
-  get canCreateTasks() { return this.authService.hasPermission('crear:tareas'); }
-  get canUpdateTasks() { return this.authService.hasPermission('actualizar:tareas'); }
-  get canDeleteTasks() { return this.authService.hasPermission('eliminar:tareas'); }
+  get canCreateTasks() { return this.authService.hasPermission('CREAR_TAREAS'); }
+  get canUpdateTasks() { return this.authService.hasPermission('ACTUALIZAR_TAREAS'); }
+  get canDeleteTasks() { return this.authService.hasPermission('ELIMINAR_TAREAS'); }
 
   loadProjects() {
     this.projectsService.findAll().subscribe(data => this.allProjects.set(data));

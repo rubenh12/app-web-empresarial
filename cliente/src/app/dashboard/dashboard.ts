@@ -15,7 +15,7 @@ import { AuthService } from '../core/services/auth.service.js';
         <div class="flex items-center gap-6">
           <!-- Botones de navegación según permisos -->
           <button 
-            *ngIf="auth.hasPermission('ver:usuarios')"
+            *ngIf="auth.hasPermission('VER_USUARIOS')"
             (click)="navigateToUsers()"
             class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-all active:scale-95"
           >
@@ -23,7 +23,7 @@ import { AuthService } from '../core/services/auth.service.js';
           </button>
           
           <button 
-            *ngIf="auth.hasPermission('crear:usuarios')"
+            *ngIf="auth.hasPermission('CREAR_USUARIOS')"
             (click)="navigateToCreateUser()"
             class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-all active:scale-95"
           >

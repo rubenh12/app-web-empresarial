@@ -9,38 +9,39 @@ import { ZodValidationPipe } from '../common/pipes/zod.pipe.js';
 import { AtGuard } from '../common/guards/at.guard.js';
 import { PermissionsGuard } from '../common/guards/permissions.guard.js';
 import { Permissions } from '../common/decorators/permissions.decorator.js';
+import { PermissionSlug } from '../common/enums/rbac.enum.js';
 
 @UseGuards(AtGuard, PermissionsGuard)
 @Controller('roles')
 export class RolesController {
-  constructor(private rolesService: RolesService) {}
+  constructor(private rolesService: RolesService) { }
 
   @Get()
-  @Permissions('ver:usuarios')
+  @Permissions(PermissionSlug.VER_USUARIOS)
   async findAll() {
     return this.rolesService.findAll();
   }
 
   @Get('permissions')
-  @Permissions('ver:usuarios', 'crear:usuarios', 'actualizar:usuarios')
+  @Permissions(PermissionSlug.VER_USUARIOS, PermissionSlug.CREAR_USUARIOS, PermissionSlug.ACTUALIZAR_USUARIOS)
   async findAllPermissions() {
     return this.rolesService.findAllPermissions();
   }
 
   @Get(':id')
-  @Permissions('ver:usuarios')
+  @Permissions(PermissionSlug.VER_USUARIOS)
   async findOne(@Param('id') id: string) {
     return this.rolesService.findOne(id);
   }
 
   @Post()
-  @Permissions('crear:usuarios')
+  @Permissions(PermissionSlug.CREAR_USUARIOS)
   async create(@Body(new ZodValidationPipe(CreateRoleSchema)) dto: CreateRoleDto) {
     return this.rolesService.create(dto);
   }
 
   @Patch(':id')
-  @Permissions('actualizar:usuarios')
+  @Permissions(PermissionSlug.ACTUALIZAR_USUARIOS)
   async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateRoleSchema)) dto: UpdateRoleDto,
@@ -49,7 +50,7 @@ export class RolesController {
   }
 
   @Delete(':id')
-  @Permissions('eliminar:usuarios')
+  @Permissions(PermissionSlug.ELIMINAR_USUARIOS)
   async remove(@Param('id') id: string) {
     return this.rolesService.remove(id);
   }
