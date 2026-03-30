@@ -12,16 +12,16 @@ import { Permissions } from '../common/decorators/permissions.decorator.js';
 @UseGuards(AtGuard, PermissionsGuard)
 @Controller('clients')
 export class ClientsController {
-  constructor(private clientsService: ClientsService) {}
+  constructor(private clientsService: ClientsService) { }
 
   @Get()
-  @Permissions('ver:clientes')
+  @Permissions('ver:clientes', 'crear:proyectos', 'actualizar:proyectos')
   async findAll() {
     return this.clientsService.findAll();
   }
 
   @Get(':id')
-  @Permissions('ver:clientes')
+  @Permissions('ver:clientes', 'crear:proyectos', 'actualizar:proyectos')
   async findOne(@Param('id') id: string) {
     return this.clientsService.findOne(id);
   }

@@ -15,13 +15,13 @@ export class ProjectsController {
   constructor(private projectsService: ProjectsService) {}
 
   @Get()
-  @Permissions('ver:proyectos')
+  @Permissions('ver:proyectos', 'ver:tareas', 'crear:tareas', 'actualizar:tareas')
   async findAll() {
     return this.projectsService.findAll();
   }
 
   @Get(':id')
-  @Permissions('ver:proyectos')
+  @Permissions('ver:proyectos', 'ver:tareas', 'crear:tareas', 'actualizar:tareas')
   async findOne(@Param('id') id: string) {
     return this.projectsService.findOne(id);
   }

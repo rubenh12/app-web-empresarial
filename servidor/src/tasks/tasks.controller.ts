@@ -15,13 +15,13 @@ export class TasksController {
   constructor(private tasksService: TasksService) {}
 
   @Get()
-  @Permissions('ver:tareas')
+  @Permissions('ver:tareas', 'ver:proyectos', 'crear:proyectos', 'actualizar:proyectos')
   async findAll(@Query('projectId') projectId?: string) {
     return this.tasksService.findAll(projectId);
   }
 
   @Get(':id')
-  @Permissions('ver:tareas')
+  @Permissions('ver:tareas', 'ver:proyectos', 'crear:proyectos', 'actualizar:proyectos')
   async findOne(@Param('id') id: string) {
     return this.tasksService.findOne(id);
   }
