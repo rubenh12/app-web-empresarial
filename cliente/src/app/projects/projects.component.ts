@@ -7,11 +7,22 @@ import { ToastService } from '../core/services/toast.service';
 import { SharedButtonComponent } from '../shared/components/button/button';
 import { ModalComponent } from '../shared/components/modal/modal.component';
 import { ProjectFormComponent } from './project-form.component';
+import { ProjectGanttComponent } from './components/project-gantt/project-gantt';
+import { ProjectReportComponent } from './components/project-report/project-report';
+import { ProjectHistoryComponent } from './components/project-history/project-history';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [CommonModule, SharedButtonComponent, ModalComponent, ProjectFormComponent],
+  imports: [
+    CommonModule, 
+    SharedButtonComponent, 
+    ModalComponent, 
+    ProjectFormComponent,
+    ProjectGanttComponent,
+    ProjectReportComponent,
+    ProjectHistoryComponent
+  ],
   template: `
     <div class="container mx-auto p-6">
       <div class="flex justify-between items-center mb-6">
@@ -66,13 +77,36 @@ import { ProjectFormComponent } from './project-form.component';
                   <button 
                     (click)="openTasksModal(p)"
                     class="text-blue-600 hover:text-blue-900 mr-3"
+                    title="Ver Tareas"
                   >
                     Tareas
+                  </button>
+                  <button 
+                    (click)="openGanttModal(p)"
+                    class="text-teal-600 hover:text-teal-900 mr-3"
+                    title="Diagrama de Gantt"
+                  >
+                    Gantt
+                  </button>
+                  <button 
+                    (click)="openReportModal(p)"
+                    class="text-purple-600 hover:text-purple-900 mr-3"
+                    title="Reporte del Proyecto"
+                  >
+                    Reporte
+                  </button>
+                  <button 
+                    (click)="openHistoryModal(p)"
+                    class="text-amber-600 hover:text-amber-900 mr-3"
+                    title="Historial de Cambios"
+                  >
+                    Historial
                   </button>
                   <button 
                     *ngIf="canUpdateProjects"
                     (click)="openEditModal(p.id)"
                     class="text-indigo-600 hover:text-indigo-900 mr-3"
+                    title="Editar Proyecto"
                   >
                     Editar
                   </button>
@@ -80,10 +114,10 @@ import { ProjectFormComponent } from './project-form.component';
                     *ngIf="canDeleteProjects"
                     (click)="deleteProject(p.id)"
                     class="text-red-600 hover:text-red-900"
+                    title="Eliminar Proyecto"
                   >
                     Eliminar
                   </button>
-                </td>
               </tr>
             </tbody>
           </table>
@@ -102,11 +136,28 @@ import { ProjectFormComponent } from './project-form.component';
 
       <app-modal #modal>
         <app-project-form 
-          *ngIf="modal.isOpen()"
+          *ngIf="modal.isOpen() && modalView() === 'form'"
           [projectId]="editingProjectId()"
           (onSuccess)="onFormSuccess()"
           (onCancel)="closeModal()"
         ></app-project-form>
+
+        <app-project-gantt
+          *ngIf="modal.isOpen() && modalView() === 'gantt'"
+          [projectId]="selectedProject()!.id"
+          [projectStartDate]="selectedProject()!.startDate"
+          [projectEndDate]="selectedProject()!.endDate!"
+        ></app-project-gantt>
+
+        <app-project-report
+          *ngIf="modal.isOpen() && modalView() === 'report'"
+          [projectId]="selectedProject()!.id"
+        ></app-project-report>
+
+        <app-project-history
+          *ngIf="modal.isOpen() && modalView() === 'history'"
+          [projectId]="selectedProject()!.id"
+        ></app-project-history>
       </app-modal>
     </div>
   `
@@ -116,6 +167,8 @@ export class ProjectsComponent implements OnInit {
   isLoading = signal(true);
   editingProjectId = signal<string | null>(null);
   projectToDelete = signal<string | null>(null);
+  selectedProject = signal<Project | null>(null);
+  modalView = signal<'form' | 'gantt' | 'report' | 'history'>('form');
 
   @ViewChild('modal') modal!: ModalComponent;
   @ViewChild('deleteModal') deleteModal!: ModalComponent;
@@ -146,12 +199,32 @@ export class ProjectsComponent implements OnInit {
 
   openCreateModal() {
     this.editingProjectId.set(null);
+    this.modalView.set('form');
     this.modal.open({ title: 'Gestión de Proyecto', size: 'lg' });
   }
 
   openEditModal(id: string) {
     this.editingProjectId.set(id);
+    this.modalView.set('form');
     this.modal.open({ title: 'Gestión de Proyecto', size: 'lg' });
+  }
+
+  openGanttModal(project: Project) {
+    this.selectedProject.set(project);
+    this.modalView.set('gantt');
+    this.modal.open({ title: `Cronograma: ${project.name}`, size: 'xl' });
+  }
+
+  openReportModal(project: Project) {
+    this.selectedProject.set(project);
+    this.modalView.set('report');
+    this.modal.open({ title: `Reporte de Proyecto: ${project.name}`, size: 'lg' });
+  }
+
+  openHistoryModal(project: Project) {
+    this.selectedProject.set(project);
+    this.modalView.set('history');
+    this.modal.open({ title: `Historial de Cambios: ${project.name}`, size: 'lg' });
   }
 
   openTasksModal(project: Project) {

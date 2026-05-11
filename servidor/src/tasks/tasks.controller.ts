@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Patch, Delete, Body, Param, Query,
+  Controller, Get, Post, Patch, Delete, Body, Param, Query, Req,
   UseGuards, UsePipes, BadRequestException,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service.js';
@@ -29,8 +29,11 @@ export class TasksController {
 
   @Post()
   @Permissions(PermissionSlug.CREAR_TAREAS)
-  async create(@Body(new ZodValidationPipe(CreateTaskSchema)) dto: CreateTaskDto) {
-    return this.tasksService.create(dto);
+  async create(
+    @Body(new ZodValidationPipe(CreateTaskSchema)) dto: CreateTaskDto,
+    @Req() req: any
+  ) {
+    return this.tasksService.create(dto, req.user);
   }
 
   @Patch(':id')
@@ -38,13 +41,14 @@ export class TasksController {
   async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateTaskSchema)) dto: UpdateTaskDto,
+    @Req() req: any
   ) {
-    return this.tasksService.update(id, dto);
+    return this.tasksService.update(id, dto, req.user);
   }
 
   @Delete(':id')
   @Permissions(PermissionSlug.ELIMINAR_TAREAS)
-  async remove(@Param('id') id: string) {
-    return this.tasksService.remove(id);
+  async remove(@Param('id') id: string, @Req() req: any) {
+    return this.tasksService.remove(id, req.user);
   }
 }

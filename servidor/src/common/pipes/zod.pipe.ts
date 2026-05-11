@@ -17,6 +17,10 @@ export class ZodValidationPipe implements PipeTransform {
       const validatedValue = this.schema.parse(parsedValue);
       return validatedValue;
     } catch (error) {
+      console.error('--- ZOD VALIDATION ERROR ---');
+      console.error('Value received:', JSON.stringify(parsedValue, null, 2));
+      console.error('Errors:', (error as any).errors || (error as any).issues);
+      console.error('----------------------------');
       const zodError = error as any;
       let errorMessage = 'Error de validación';
       let details: any[] = [];

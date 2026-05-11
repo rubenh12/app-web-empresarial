@@ -20,6 +20,8 @@ export interface Task {
     name: string;
     email: string;
   };
+  startDate: string;
+  endDate?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -31,6 +33,8 @@ export interface CreateTaskDto {
   status?: string;
   projectId: string;
   userId: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface UpdateTaskDto extends Partial<CreateTaskDto> { }

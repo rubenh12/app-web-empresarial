@@ -67,10 +67,26 @@ model Task {
   description String?
   priority    String   @default("media")
   status      String   @default("pendiente")
+  startDate   DateTime @default(now())
+  endDate     DateTime?
   project     Project  @relation(fields: [projectId], references: [id])
   projectId   String
   assignedTo  User     @relation(fields: [userId], references: [id])
   userId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  entityType   String   // "Project", "Task"
+  entityId     String
+  entityName   String
+  action       String   // "CREATE", "UPDATE", "DELETE"
+  previousData Json?
+  newData      Json?
+  userId       String
+  userName     String
+  projectId    String?  // If it's a task, which project it belongs to
+  createdAt    DateTime @default(now())
 }

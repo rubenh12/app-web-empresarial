@@ -71,6 +71,24 @@ import { SharedButtonComponent } from '../shared/components/button/button';
               </select>
             </div>
           </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-semibold text-slate-700">Fecha Inicio</label>
+              <input 
+                type="date" 
+                formControlName="startDate"
+                class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 outline-none focus:border-blue-500"
+              />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-semibold text-slate-700">Fecha Fin</label>
+              <input 
+                type="date" 
+                formControlName="endDate"
+                class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 outline-none focus:border-blue-500"
+              />
+            </div>
+          </div>
 
           <div class="flex gap-4 pt-6">
             <app-shared-button
@@ -112,7 +130,9 @@ export class TaskFormComponent implements OnInit {
       priority: ['media', Validators.required],
       status: ['pendiente', Validators.required],
       projectId: ['', Validators.required],
-      userId: ['', Validators.required]
+      userId: ['', Validators.required],
+      startDate: [new Date().toISOString().split('T')[0], Validators.required],
+      endDate: ['']
     });
   }
 
@@ -140,7 +160,14 @@ export class TaskFormComponent implements OnInit {
     this.isLoading = true;
     this.tasksService.findOne(this.taskId!).subscribe({
       next: (task) => {
-        this.taskForm.patchValue(task);
+        const formattedTask = {
+          ...task,
+          projectId: task.projectId || (task as any).project?.id,
+          userId: task.userId || (task as any).assignedTo?.id,
+          startDate: task.startDate ? new Date(task.startDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+          endDate: task.endDate ? new Date(task.endDate).toISOString().split('T')[0] : ''
+        };
+        this.taskForm.patchValue(formattedTask);
         this.isLoading = false;
       },
       error: () => this.isLoading = false

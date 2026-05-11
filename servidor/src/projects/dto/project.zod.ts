@@ -2,9 +2,9 @@ import { z } from 'zod';
 
 const BaseProjectSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
-  description: z.string().optional(),
-  startDate: z.string().or(z.date()).transform((val) => new Date(val)),
-  endDate: z.string().or(z.date()).optional().nullable().transform((val) => val ? new Date(val) : null),
+  description: z.string().optional().nullable(),
+  startDate: z.coerce.date(),
+  endDate: z.preprocess((val) => (val === '' || val === null ? null : val), z.coerce.date().optional().nullable()),
   status: z.enum(['pendiente', 'en_progreso', 'completado', 'cancelado']).default('pendiente'),
   clientId: z.string().min(1, 'Debe seleccionar un cliente'),
 });

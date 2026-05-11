@@ -26,7 +26,7 @@ export class AuthService {
     if (!passwordMatches) throw new UnauthorizedException('Credenciales inválidas');
 
     const permissions = user.role.permissions.map(p => p.slug);
-    const tokens = await this.getTokens(user.id, user.email, user.role.name, permissions);
+    const tokens = await this.getTokens(user.id, user.email, user.name || '', user.role.name, permissions);
     await this.updateRefreshToken(user.id, tokens.refresh_token);
 
     return {
@@ -66,7 +66,7 @@ export class AuthService {
     if (!rtMatches) throw new ForbiddenException('Acceso denegado');
 
     const permissions = user.role.permissions.map(p => p.slug);
-    const tokens = await this.getTokens(user.id, user.email, user.role.name, permissions);
+    const tokens = await this.getTokens(user.id, user.email, user.name || '', user.role.name, permissions);
     await this.updateRefreshToken(user.id, tokens.refresh_token);
 
     return tokens;
@@ -80,10 +80,10 @@ export class AuthService {
     });
   }
 
-  async getTokens(userId: string, email: string, role: string, permissions: string[]) {
+  async getTokens(userId: string, email: string, name: string, role: string, permissions: string[]) {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
-        { sub: userId, email, role, permissions },
+        { sub: userId, email, name, role, permissions },
         { secret: process.env.JWT_SECRET || 'at-secret', expiresIn: '15m' },
       ),
       this.jwtService.signAsync(

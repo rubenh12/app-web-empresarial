@@ -6,14 +6,22 @@ import { AuthService } from '../core/services/auth.service';
 import { ToastService } from '../core/services/toast.service';
 import { SharedButtonComponent } from '../shared/components/button/button';
 import { ModalComponent } from '../shared/components/modal/modal.component';
-import { TaskFormComponent } from './task-form.component.js';
+import { TaskFormComponent } from './task-form.component';
+import { ProjectHistoryComponent } from '../projects/components/project-history/project-history';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tasks',
   standalone: true,
-  imports: [CommonModule, SharedButtonComponent, ModalComponent, TaskFormComponent, FormsModule],
+  imports: [
+    CommonModule, 
+    SharedButtonComponent, 
+    ModalComponent, 
+    TaskFormComponent, 
+    ProjectHistoryComponent,
+    FormsModule
+  ],
   template: `
     <div class="container mx-auto p-6">
       <div *ngIf="showHeader" class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -72,10 +80,13 @@ import { FormsModule } from '@angular/forms';
                   {{ t.priority }}
                 </span>
                 <div class="flex gap-2">
-                  <button (click)="openEditModal(t.id)" class="text-slate-400 hover:text-blue-600">
+                  <button (click)="openHistoryModal(t)" class="text-slate-400 hover:text-amber-500" title="Ver Historial">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  </button>
+                  <button (click)="openEditModal(t.id)" class="text-slate-400 hover:text-blue-600" title="Editar">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                   </button>
-                  <button (click)="deleteTask(t.id)" class="text-slate-400 hover:text-red-500">
+                  <button (click)="deleteTask(t.id)" class="text-slate-400 hover:text-red-500" title="Eliminar">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                   </button>
                 </div>
@@ -110,12 +121,17 @@ import { FormsModule } from '@angular/forms';
 
       <app-modal #modal>
         <app-task-form 
-          *ngIf="modal.isOpen()"
+          *ngIf="modal.isOpen() && modalView() === 'form'"
           [taskId]="editingTaskId()"
           [projectId]="projectId || currentProjectId()"
           (onSuccess)="onFormSuccess()"
           (onCancel)="closeModal()"
         ></app-task-form>
+
+        <app-project-history
+          *ngIf="modal.isOpen() && modalView() === 'history'"
+          [entityId]="selectedTask()!.id"
+        ></app-project-history>
       </app-modal>
     </div>
   `
@@ -130,6 +146,8 @@ export class TasksComponent implements OnInit {
   isLoading = signal(false);
   editingTaskId = signal<string | null>(null);
   taskToDelete = signal<string | null>(null);
+  selectedTask = signal<Task | null>(null);
+  modalView = signal<'form' | 'history'>('form');
 
   statusList = ['pendiente', 'en_progreso', 'completado', 'bloqueado'];
 
@@ -193,12 +211,20 @@ export class TasksComponent implements OnInit {
 
   openCreateModal() {
     this.editingTaskId.set(null);
+    this.modalView.set('form');
     this.modal.open({ title: 'Nueva Tarea', size: 'lg' });
   }
 
   openEditModal(id: string) {
     this.editingTaskId.set(id);
+    this.modalView.set('form');
     this.modal.open({ title: 'Editar Tarea', size: 'lg' });
+  }
+
+  openHistoryModal(task: Task) {
+    this.selectedTask.set(task);
+    this.modalView.set('history');
+    this.modal.open({ title: `Historial: ${task.title}`, size: 'lg' });
   }
 
   closeModal() { this.modal.close(); }

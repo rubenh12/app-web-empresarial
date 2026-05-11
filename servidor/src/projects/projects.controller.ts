@@ -42,8 +42,11 @@ export class ProjectsController {
 
   @Post()
   @Permissions(PermissionSlug.CREAR_PROYECTOS)
-  async create(@Body(new ZodValidationPipe(CreateProjectSchema)) dto: CreateProjectDto) {
-    return this.projectsService.create(dto);
+  async create(
+    @Body(new ZodValidationPipe(CreateProjectSchema)) dto: CreateProjectDto,
+    @Req() req: any
+  ) {
+    return this.projectsService.create(dto, req.user);
   }
 
   @Patch(':id')
@@ -51,13 +54,14 @@ export class ProjectsController {
   async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateProjectSchema)) dto: UpdateProjectDto,
+    @Req() req: any
   ) {
-    return this.projectsService.update(id, dto);
+    return this.projectsService.update(id, dto, req.user);
   }
 
   @Delete(':id')
   @Permissions(PermissionSlug.ELIMINAR_PROYECTOS)
-  async remove(@Param('id') id: string) {
-    return this.projectsService.remove(id);
+  async remove(@Param('id') id: string, @Req() req: any) {
+    return this.projectsService.remove(id, req.user);
   }
 }
