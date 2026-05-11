@@ -42,12 +42,13 @@ export class TasksService {
       data: dto as any,
     });
 
+    const { project, assignedTo, ...taskData } = task as any;
     await this.auditLog.createLog({
       entityType: 'Task',
       entityId: task.id,
       entityName: task.title,
       action: 'CREATE',
-      newData: task,
+      newData: taskData,
       userId: user.sub,
       userName: user.name || user.email,
       projectId: task.projectId,
@@ -63,13 +64,15 @@ export class TasksService {
       data: dto as any,
     });
 
+    const { project: p1, assignedTo: a1, ...prevData } = previousTask as any;
+    const { project: p2, assignedTo: a2, ...currData } = updatedTask as any;
     await this.auditLog.createLog({
       entityType: 'Task',
       entityId: id,
       entityName: updatedTask.title,
       action: 'UPDATE',
-      previousData: previousTask,
-      newData: updatedTask,
+      previousData: prevData,
+      newData: currData,
       userId: user.sub,
       userName: user.name || user.email,
       projectId: updatedTask.projectId,
@@ -82,12 +85,13 @@ export class TasksService {
     const task = await this.findOne(id);
     const result = await this.prisma.client.task.delete({ where: { id } });
 
+    const { project, assignedTo, ...prevData } = task as any;
     await this.auditLog.createLog({
       entityType: 'Task',
       entityId: id,
       entityName: task.title,
       action: 'DELETE',
-      previousData: task,
+      previousData: prevData,
       userId: user.sub,
       userName: user.name || user.email,
       projectId: task.projectId,

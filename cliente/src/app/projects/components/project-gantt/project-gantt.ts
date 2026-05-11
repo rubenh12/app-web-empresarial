@@ -38,12 +38,11 @@ import { ProjectsService, Project } from '../../../core/services/projects.servic
             <div class="w-3/4 h-8 bg-slate-50 rounded-lg relative overflow-hidden">
               <!-- Task Bar -->
               <div 
-                class="absolute h-full rounded-lg shadow-sm flex items-center px-3 transition-all duration-500"
+                class="absolute h-full rounded-lg shadow-sm transition-all duration-500"
                 [ngClass]="getStatusColor(task.status)"
                 [style.left.%]="getTaskStartOffset(task)"
                 [style.width.%]="getTaskWidth(task)"
               >
-                <span class="text-[9px] font-bold text-white truncate">{{ getProgress(task) }}%</span>
               </div>
             </div>
           </div>
@@ -94,12 +93,18 @@ export class ProjectGanttComponent implements OnInit {
 
   generateTimeline() {
     const start = new Date(this.projectStartDate);
+    const end = this.projectEndDate ? new Date(this.projectEndDate) : new Date(start.getTime() + (120 * 24 * 60 * 60 * 1000));
+    
+    // Calcular cuántos meses hay entre inicio y fin
+    const monthDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+    const numMonths = Math.max(4, Math.min(monthDiff, 24)); // Entre 4 y 24 meses para no saturar
+    
     const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
     const timeline = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < numMonths; i++) {
       const d = new Date(start);
       d.setMonth(start.getMonth() + i);
-      timeline.push(months[d.getMonth()]);
+      timeline.push(`${months[d.getMonth()]} ${d.getFullYear().toString().slice(-2)}`);
     }
     this.timelineMonths.set(timeline);
   }
@@ -109,6 +114,14 @@ export class ProjectGanttComponent implements OnInit {
     this.tasksService.findAll(this.projectId).subscribe({
       next: (data) => {
         this.tasks.set(data);
+        // Si no hay fecha de fin de proyecto, ajustamos el timeline basado en la tarea más lejana
+        if (!this.projectEndDate && data.length > 0) {
+          const latestTaskDate = Math.max(...data.map(t => new Date(t.endDate || t.startDate || t.createdAt).getTime()));
+          const fourMonthsFromStart = new Date(this.projectStartDate).getTime() + (120 * 24 * 60 * 60 * 1000);
+          if (latestTaskDate > fourMonthsFromStart) {
+             this.generateTimeline(); // Regenerar con el nuevo rango si es necesario
+          }
+        }
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false)
@@ -134,19 +147,31 @@ export class ProjectGanttComponent implements OnInit {
 
   getTaskStartOffset(task: Task): number {
     const projectStart = new Date(this.projectStartDate).getTime();
-    const projectEnd = this.projectEndDate ? new Date(this.projectEndDate).getTime() : new Date(this.projectStartDate).getTime() + (120 * 24 * 60 * 60 * 1000);
-    const taskStart = new Date(task.startDate || task.createdAt).getTime();
+    let projectEnd = this.projectEndDate ? new Date(this.projectEndDate).getTime() : projectStart + (120 * 24 * 60 * 60 * 1000);
     
+    // Si hay tareas más allá del fin "estimado", ampliamos el rango visual
+    if (this.tasks().length > 0) {
+      const latestTaskDate = Math.max(...this.tasks().map(t => new Date(t.endDate || t.startDate || t.createdAt).getTime()));
+      if (latestTaskDate > projectEnd) projectEnd = latestTaskDate + (30 * 24 * 60 * 60 * 1000); // +1 mes de margen
+    }
+
+    const taskStart = new Date(task.startDate || task.createdAt).getTime();
     const totalDuration = projectEnd - projectStart;
     const offset = taskStart - projectStart;
     
     const percentage = (offset / totalDuration) * 100;
-    return Math.max(0, Math.min(percentage, 95));
+    return Math.max(0, Math.min(percentage, 98));
   }
 
   getTaskWidth(task: Task): number {
     const projectStart = new Date(this.projectStartDate).getTime();
-    const projectEnd = this.projectEndDate ? new Date(this.projectEndDate).getTime() : new Date(this.projectStartDate).getTime() + (120 * 24 * 60 * 60 * 1000);
+    let projectEnd = this.projectEndDate ? new Date(this.projectEndDate).getTime() : projectStart + (120 * 24 * 60 * 60 * 1000);
+    
+    if (this.tasks().length > 0) {
+      const latestTaskDate = Math.max(...this.tasks().map(t => new Date(t.endDate || t.startDate || t.createdAt).getTime()));
+      if (latestTaskDate > projectEnd) projectEnd = latestTaskDate + (30 * 24 * 60 * 60 * 1000);
+    }
+
     const taskStart = new Date(task.startDate || task.createdAt).getTime();
     const taskEnd = task.endDate ? new Date(task.endDate).getTime() : taskStart + (7 * 24 * 60 * 60 * 1000);
     
@@ -154,9 +179,8 @@ export class ProjectGanttComponent implements OnInit {
     const taskDuration = taskEnd - taskStart;
     
     let percentage = (taskDuration / totalDuration) * 100;
-    if (percentage < 5) percentage = 5; // Min width
+    if (percentage < 2) percentage = 2; // Min width visible
     
-    // Ensure it doesn't overflow
     const offset = this.getTaskStartOffset(task);
     if (offset + percentage > 100) percentage = 100 - offset;
     

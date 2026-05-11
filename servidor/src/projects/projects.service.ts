@@ -38,12 +38,13 @@ export class ProjectsService {
       data: dto as any,
     });
 
+    const { tasks, client, ...projectData } = project as any;
     await this.auditLog.createLog({
       entityType: 'Project',
       entityId: project.id,
       entityName: project.name,
       action: 'CREATE',
-      newData: project,
+      newData: projectData,
       userId: user.sub,
       userName: user.name || user.email,
       projectId: project.id,
@@ -59,13 +60,15 @@ export class ProjectsService {
       data: dto as any,
     });
 
+    const { tasks: t1, client: c1, ...prevData } = previousProject as any;
+    const { tasks: t2, client: c2, ...currData } = updatedProject as any;
     await this.auditLog.createLog({
       entityType: 'Project',
       entityId: id,
       entityName: updatedProject.name,
       action: 'UPDATE',
-      previousData: previousProject,
-      newData: updatedProject,
+      previousData: prevData,
+      newData: currData,
       userId: user.sub,
       userName: user.name || user.email,
       projectId: id,
@@ -78,12 +81,13 @@ export class ProjectsService {
     const project = await this.findOne(id);
     const result = await this.prisma.client.project.delete({ where: { id } });
 
+    const { tasks, client, ...prevData } = project as any;
     await this.auditLog.createLog({
       entityType: 'Project',
       entityId: id,
       entityName: project.name,
       action: 'DELETE',
-      previousData: project,
+      previousData: prevData,
       userId: user.sub,
       userName: user.name || user.email,
       projectId: id,
