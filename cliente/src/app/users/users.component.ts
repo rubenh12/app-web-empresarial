@@ -7,17 +7,18 @@ import { Router } from '@angular/router';
 import { SharedButtonComponent } from '../shared/components/button/button';
 import { ModalComponent } from '../shared/components/modal/modal.component';
 import { UserFormComponent } from './user-form.component';
+import { HasPermissionDirective } from '../core/directives/has-permission.directive';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, SharedButtonComponent, ModalComponent, UserFormComponent],
+  imports: [CommonModule, SharedButtonComponent, ModalComponent, UserFormComponent, HasPermissionDirective],
   template: `
     <div class="container mx-auto p-6">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Usuarios</h1>
         <app-shared-button 
-          *ngIf="canCreateUsers"
+          *hasPermission="'CREAR_USUARIOS'"
           label="Nuevo Usuario" 
           (click)="openCreateModal()"
           type="button"
@@ -58,17 +59,16 @@ import { UserFormComponent } from './user-form.component';
                 {{ formatDate(user.createdAt) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <!-- Escritorio: Botones directos -->
                 <div class="hidden md:flex justify-end gap-3">
                   <button 
-                    *ngIf="canUpdateUsers"
+                    *hasPermission="'ACTUALIZAR_USUARIOS'"
                     (click)="openEditModal(user.id)"
                     class="text-blue-600 hover:text-blue-900 font-semibold"
                   >
                     Editar
                   </button>
                   <button 
-                    *ngIf="canDeleteUsers"
+                    *hasPermission="'ELIMINAR_USUARIOS'"
                     (click)="deleteUser(user.id)"
                     class="text-red-600 hover:text-red-900 font-semibold"
                   >
@@ -76,7 +76,6 @@ import { UserFormComponent } from './user-form.component';
                   </button>
                 </div>
 
-                <!-- Móvil: Menú de tres puntos -->
                 <button 
                   (click)="openActionsModal(user)" 
                   class="md:hidden p-2 hover:bg-slate-100 rounded-full transition-colors"
@@ -91,7 +90,6 @@ import { UserFormComponent } from './user-form.component';
         </table>
       </div>
 
-      <!-- Modal para confirmar eliminación -->
       <app-modal #deleteModal>
         <div class="text-center">
           <p class="mb-6">¿Estás seguro de que deseas eliminar este usuario?</p>
@@ -111,7 +109,6 @@ import { UserFormComponent } from './user-form.component';
         </div>
       </app-modal>
 
-      <!-- Modal para crear/editar usuarios -->
       <app-modal #modal>
         <app-user-form 
           *ngIf="modal.isOpen()"
@@ -121,18 +118,17 @@ import { UserFormComponent } from './user-form.component';
         ></app-user-form>
       </app-modal>
 
-      <!-- Modal para acciones móviles -->
       <app-modal #actionsModal>
         <div class="flex flex-col gap-4 p-2">
           <h3 class="text-lg font-bold text-slate-800 border-b pb-2 mb-2">{{ selectedUser()?.name }}</h3>
           <app-shared-button 
-            *ngIf="canUpdateUsers"
+            *hasPermission="'ACTUALIZAR_USUARIOS'"
             label="Editar Usuario" 
             variant="secondary"
             (click)="closeActionsAndEdit()"
           />
           <app-shared-button 
-            *ngIf="canDeleteUsers"
+            *hasPermission="'ELIMINAR_USUARIOS'"
             label="Eliminar Usuario" 
             variant="danger"
             (click)="closeActionsAndDelete()"

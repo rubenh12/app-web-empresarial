@@ -7,17 +7,18 @@ import { Router } from '@angular/router';
 import { SharedButtonComponent } from '../shared/components/button/button';
 import { ModalComponent } from '../shared/components/modal/modal.component';
 import { ClientFormComponent } from './client-form.component';
+import { HasPermissionDirective } from '../core/directives/has-permission.directive';
 
 @Component({
   selector: 'app-clients',
   standalone: true,
-  imports: [CommonModule, SharedButtonComponent, ModalComponent, ClientFormComponent],
+  imports: [CommonModule, SharedButtonComponent, ModalComponent, ClientFormComponent, HasPermissionDirective],
   template: `
     <div class="container mx-auto p-6">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Clientes</h1>
         <app-shared-button 
-          *ngIf="canCreateClients"
+          *hasPermission="'CREAR_CLIENTES'"
           label="Nuevo Cliente" 
           (click)="openCreateModal()"
           type="button"
@@ -66,19 +67,19 @@ import { ClientFormComponent } from './client-form.component';
                   <!-- Escritorio -->
                   <div class="hidden md:flex justify-end gap-3">
                     <button 
-                      *ngIf="canUpdateClients"
-                      (click)="openEditModal(client.id)"
-                      class="text-blue-600 hover:text-blue-900 font-semibold"
-                    >
-                      Editar
-                    </button>
-                    <button 
-                      *ngIf="canDeleteClients"
-                      (click)="deleteClient(client.id)"
-                      class="text-red-600 hover:text-red-900 font-semibold"
-                    >
-                      Eliminar
-                    </button>
+                    *hasPermission="'ACTUALIZAR_CLIENTES'"
+                    (click)="openEditModal(client.id)"
+                    class="text-blue-600 hover:text-blue-900 mr-4"
+                  >
+                    Editar
+                  </button>
+                  <button 
+                    *hasPermission="'ELIMINAR_CLIENTES'"
+                    (click)="deleteClient(client.id)"
+                    class="text-red-600 hover:text-red-900"
+                  >
+                    Eliminar
+                  </button>
                   </div>
 
                   <!-- Móvil -->

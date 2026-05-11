@@ -27,9 +27,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           localStorage.clear();
           router.navigate(['/login']);
         } else if (error.status === 403) {
-          toast.error('Permisos insuficientes. Regresando al login...');
-          localStorage.clear();
-          router.navigate(['/login']);
+          toast.error(error.error?.message || 'No tienes permisos suficientes para esta acción');
         }
       }
       return throwError(() => error);

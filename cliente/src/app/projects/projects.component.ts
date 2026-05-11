@@ -10,6 +10,7 @@ import { ProjectFormComponent } from './project-form.component';
 import { ProjectGanttComponent } from './components/project-gantt/project-gantt';
 import { ProjectReportComponent } from './components/project-report/project-report';
 import { ProjectHistoryComponent } from './components/project-history/project-history';
+import { HasPermissionDirective } from '../core/directives/has-permission.directive';
 
 @Component({
   selector: 'app-projects',
@@ -21,14 +22,15 @@ import { ProjectHistoryComponent } from './components/project-history/project-hi
     ProjectFormComponent,
     ProjectGanttComponent,
     ProjectReportComponent,
-    ProjectHistoryComponent
+    ProjectHistoryComponent,
+    HasPermissionDirective
   ],
   template: `
     <div class="container mx-auto p-6">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Proyectos</h1>
         <app-shared-button 
-          *ngIf="canCreateProjects"
+          *hasPermission="'CREAR_PROYECTOS'"
           label="Nuevo Proyecto" 
           (click)="openCreateModal()"
           type="button"
@@ -103,7 +105,7 @@ import { ProjectHistoryComponent } from './components/project-history/project-hi
                     Historial
                   </button>
                   <button 
-                    *ngIf="canUpdateProjects"
+                    *hasPermission="'ACTUALIZAR_PROYECTOS'"
                     (click)="openEditModal(p.id)"
                     class="text-indigo-600 hover:text-indigo-900 mr-3"
                     title="Editar Proyecto"
@@ -111,7 +113,7 @@ import { ProjectHistoryComponent } from './components/project-history/project-hi
                     Editar
                   </button>
                   <button 
-                    *ngIf="canDeleteProjects"
+                    *hasPermission="'ELIMINAR_PROYECTOS'"
                     (click)="deleteProject(p.id)"
                     class="text-red-600 hover:text-red-900"
                     title="Eliminar Proyecto"

@@ -25,7 +25,8 @@ export class AuthService {
     const passwordMatches = await bcrypt.compare(dto.password, user.password);
     if (!passwordMatches) throw new UnauthorizedException('Credenciales inválidas');
 
-    const permissions = user.role.permissions.map(p => p.slug);
+    const permissions = user.role?.permissions?.map(p => p.slug) || [];
+    
     const tokens = await this.getTokens(user.id, user.email, user.name || '', user.role.name, permissions);
     await this.updateRefreshToken(user.id, tokens.refresh_token);
 

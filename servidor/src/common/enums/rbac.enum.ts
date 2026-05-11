@@ -1,6 +1,6 @@
 export const RoleName = {
   ADMIN: 'ADMIN',
-  USUARIO: 'USUARIO',
+  TRABAJADOR: 'TRABAJADOR',
 } as const
 
 export const PermissionSlug = {

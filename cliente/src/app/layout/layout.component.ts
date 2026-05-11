@@ -2,55 +2,54 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
+import { HasPermissionDirective } from '../core/directives/has-permission.directive';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, HasPermissionDirective],
   template: `
     <div class="min-h-screen bg-gray-50">
       <nav class="bg-white shadow-md border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between items-center h-16">
-            <!-- Logo -->
             <div class="flex items-center">
               <h1 class="text-2xl font-bold text-gray-900">
                 Gestor de <span class="text-blue-600">Proyectos</span>
               </h1>
             </div>
 
-            <!-- Navigation Links -->
             <div class="hidden md:flex items-center space-x-4">
               <button 
-                *ngIf="auth.hasPermission('VER_USUARIOS')"
+                *hasPermission="'VER_USUARIOS'"
                 (click)="navigateToUsers()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
                 Usuarios
               </button>
               <button 
-                *ngIf="auth.hasPermission('CREAR_USUARIOS') || auth.hasPermission('ACTUALIZAR_USUARIOS') || auth.hasPermission('ELIMINAR_USUARIOS')"
+                *hasPermission="['CREAR_USUARIOS', 'ACTUALIZAR_USUARIOS', 'ELIMINAR_USUARIOS']"
                 (click)="navigateToRoles()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
                 Roles
               </button>
               <button 
-                *ngIf="auth.hasPermission('VER_CLIENTES')"
+                *hasPermission="'VER_CLIENTES'"
                 (click)="navigateToClients()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
                >
                 Clientes
               </button>
               <button 
-                *ngIf="auth.hasPermission('VER_PROYECTOS') || auth.hasPermission('VER_PROYECTOS_ASIGNADOS')"
+                *hasPermission="['VER_PROYECTOS', 'VER_PROYECTOS_ASIGNADOS']"
                 (click)="navigateToProjects()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
                 Proyectos
               </button>
               <button 
-                *ngIf="auth.hasPermission('VER_TAREAS')"
+                *hasPermission="'VER_TAREAS'"
                 (click)="navigateToTasks()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
@@ -58,7 +57,6 @@ import { AuthService } from '../core/services/auth.service';
               </button>
             </div>
 
-            <!-- User Menu -->
             <div class="flex items-center space-x-4">
               <div class="hidden md:flex flex-col items-end">
                 <span class="text-sm font-medium text-gray-900">{{ auth.user()?.name }}</span>
@@ -86,7 +84,6 @@ import { AuthService } from '../core/services/auth.service';
             </div>
           </div>
 
-          <!-- Mobile menu -->
           <div *ngIf="mobileMenuOpen" class="md:hidden border-t border-gray-200 pt-4 pb-3">
             <div class="space-y-1">
               <button 

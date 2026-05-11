@@ -51,7 +51,7 @@ async function main() {
   })
 
   await prisma.role.upsert({
-    where: { name: RoleName.USUARIO },
+    where: { name: RoleName.TRABAJADOR },
     update: {
       permissions: {
         set: [
@@ -63,8 +63,8 @@ async function main() {
       },
     },
     create: {
-      name: RoleName.USUARIO,
-      description: 'Usuario con acceso limitado',
+      name: RoleName.TRABAJADOR,
+      description: 'Trabajador con acceso limitado',
       permissions: {
         connect: [
           { slug: PermissionSlug.VER_USUARIOS },

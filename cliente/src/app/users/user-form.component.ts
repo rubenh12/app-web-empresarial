@@ -171,7 +171,7 @@ export class UserFormComponent implements OnInit {
       error: () => {
         this.roles.set([
           { id: '1', name: 'ADMIN', description: 'Administrador con acceso total' },
-          { id: '2', name: 'USUARIO', description: 'Usuario con acceso básico' }
+          { id: '2', name: 'TRABAJADOR', description: 'Trabajador con acceso básico' }
         ]);
       }
     });
